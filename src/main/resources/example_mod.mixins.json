@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "gay.sylv.example_mod.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [],
+	"client": [
+      "LogoRendererMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
