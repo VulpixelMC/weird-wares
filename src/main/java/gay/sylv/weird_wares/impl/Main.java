@@ -1,6 +1,6 @@
-package gay.sylv.example_mod.impl;
+package gay.sylv.weird_wares.impl;
 
-import gay.sylv.example_mod.impl.util.Constants;
+import gay.sylv.weird_wares.impl.util.Constants;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

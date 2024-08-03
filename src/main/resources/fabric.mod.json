@@ -2,25 +2,26 @@
 	"schemaVersion": 1,
 	"id": "${id}",
 	"version": "${version}",
-	"name": "Example Mod",
-	"description": "Here's an example mod! Edit me!",
+	"name": "Weird Wares",
+	"description": "Weird wares for your wacky world!",
 	"authors": [
-		"Vulpixel"
+		"Vulpixel",
+		"Sylv"
 	],
 	"contact": {
 		"homepage": "https://sylv.gay/vulpixel",
-		"sources": "https://github.com/VulpixelMC/fabric-template-mod"
+		"sources": "https://github.com/VulpixelMC/weird-wares"
 	},
-	"license": "ARR",
-	"icon": "assets/example_mod/icon.png",
+	"license": "",
+	"icon": "assets/weird-wares/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"gay.sylv.example_mod.impl.Main"
+			"gay.sylv.weird_wares.impl.Main"
 		]
 	},
 	"mixins": [
-		"example_mod.mixins.json"
+		"weird-wares.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.16.0",

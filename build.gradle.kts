@@ -150,6 +150,10 @@ tasks.withType<AbstractArchiveTask> {
 	from("COPYING.LESSER") {
 		rename { "${it}_${modId}" }
 	}
+	
+	from("LICENSE") {
+		rename { "${it}_${modId}" }
+	}
 }
 
 tasks.license.configure {
