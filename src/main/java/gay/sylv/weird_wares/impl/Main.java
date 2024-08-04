@@ -1,5 +1,6 @@
 package gay.sylv.weird_wares.impl;
 
+import gay.sylv.weird_wares.impl.item.Items;
 import gay.sylv.weird_wares.impl.util.Constants;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
@@ -11,5 +12,7 @@ public class Main implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Hello World!");
+		
+		Items.INSTANCE.initialize();
 	}
 }
