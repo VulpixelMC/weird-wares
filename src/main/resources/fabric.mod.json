@@ -18,6 +18,9 @@
 	"entrypoints": {
 		"main": [
 			"gay.sylv.weird_wares.impl.Main"
+		],
+		"client": [
+			"gay.sylv.weird_wares.impl.client.MainClient"
 		]
 	},
 	"mixins": [

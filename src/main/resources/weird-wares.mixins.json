@@ -1,13 +1,15 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "gay.sylv.weird_wares.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "mixins": [
-  ],
-  "client": [
-  ],
-  "injectors": {
-    "defaultRequire": 1
+	"required": true,
+	"minVersion": "0.8",
+	"package": "gay.sylv.weird_wares.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+	],
+	"client": [
+		"client.Mixin_BufferBuilder",
+		"client.Mixin_LevelRenderer"
+	],
+	"injectors": {
+		"defaultRequire": 1
 	}
 }

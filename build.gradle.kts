@@ -91,6 +91,8 @@ dependencies {
 		exclude(group = "net.fabricmc")
 	}
 	modRuntimeOnly(libs.resource.explorer)
+	modRuntimeOnly(libs.spark)
+	modRuntimeOnly(libs.sodium)
 }
 
 configurations {
