@@ -20,6 +20,7 @@ luckperms = "5.4"
 resource_explorer = "RuU8ZS7y"
 spark = "1.10.73-fabric"
 sodium = "mc1.21-0.5.11"
+indium = "1.0.34+mc1.21"
 
 [libraries]
 # Base
@@ -41,6 +42,7 @@ luckperms = { module = "net.luckperms:api", version.ref = "luckperms" }
 resource_explorer = { module = "maven.modrinth:resource_explorer", version.ref = "resource_explorer" }
 spark = { module = "maven.modrinth:spark", version.ref = "spark" }
 sodium = { module = "maven.modrinth:sodium", version.ref = "sodium" }
+indium = { module = "maven.modrinth:indium", version.ref = "indium" }
 
 # If you have multiple similar dependencies, you can declare a dependency bundle and reference it on the build script with "libs.bundles.example".
 [bundles]

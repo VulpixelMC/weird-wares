@@ -93,6 +93,7 @@ dependencies {
 	modRuntimeOnly(libs.resource.explorer)
 	modRuntimeOnly(libs.spark)
 	modRuntimeOnly(libs.sodium)
+	modRuntimeOnly(libs.indium)
 }
 
 configurations {
