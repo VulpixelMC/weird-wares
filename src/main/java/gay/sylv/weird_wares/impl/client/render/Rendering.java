@@ -41,10 +41,13 @@ import java.util.Set;
 public final class Rendering implements Initializable {
 	public static final Rendering INSTANCE = new Rendering();
 	public static final Direction[] DIRECTIONS = Direction.values();
-	private static final RandomSource RANDOM = RandomSource.create();
-	
 	public static final Object2ObjectMap<SectionPos, BufferBuilder> glintBufferBuilder = new Object2ObjectArrayMap<>();
 	public static final Object2ObjectMap<SectionPos, VertexBuffer> glintVertexBuffer = new Object2ObjectArrayMap<>();
+	
+	private static final RandomSource RANDOM = RandomSource.create();
+	private static final float Z_FIGHT_SCALE = 0.015f;
+	private static final float Z_FIGHT_SCALE_Y = 0.02f;
+	
 	public static VertexFormat GLINT_FORMAT;
 	public static VertexFormat.Mode GLINT_MODE;
 	public static RenderType TERRAIN_GLINT;
@@ -74,7 +77,7 @@ public final class Rendering implements Initializable {
 							.setTextureState(new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, true, false))
 							.setWriteMaskState(RenderType.COLOR_WRITE)
 							.setCullState(RenderType.NO_CULL)
-							.setDepthTestState(RenderType.EQUAL_DEPTH_TEST)
+							.setDepthTestState(RenderType.LEQUAL_DEPTH_TEST)
 							.setTransparencyState(RenderType.GLINT_TRANSPARENCY)
 							.setTexturingState(RenderType.GLINT_TEXTURING)
 							.setOutputState(RenderType.ITEM_ENTITY_TARGET)
@@ -123,9 +126,16 @@ public final class Rendering implements Initializable {
 						glint
 								.forEach(pos -> {
 									BlockState state = level.getBlockState(pos);
+									BakedModel model = blockModelShaper.getBlockModel(state);
+									
 									poseStack.pushPose();
 									poseStack.translate(SectionPos.sectionRelative(pos.getX()), SectionPos.sectionRelative(pos.getY()), SectionPos.sectionRelative(pos.getZ()));
-									BakedModel model = blockModelShaper.getBlockModel(state);
+									translateAndScale(poseStack);
+									
+									if (!state.getShape(level, pos).isEmpty() && state.getShape(level, pos).bounds().maxY <= 0.5f) {
+										poseStack.translate(0.0f, Z_FIGHT_SCALE_Y, 0.0f);
+									}
+									
 									// directional faces
 									BlockPos.MutableBlockPos mutablePos = pos.mutable();
 									for (Direction direction : DIRECTIONS) {
@@ -194,5 +204,10 @@ public final class Rendering implements Initializable {
 				}
 			});
 		});
+	}
+	
+	private static void translateAndScale(PoseStack poseStack) {
+		poseStack.translate(-Z_FIGHT_SCALE / 2.0f, -Z_FIGHT_SCALE_Y / 2.0f, -Z_FIGHT_SCALE / 2.0f);
+		poseStack.scale(Z_FIGHT_SCALE + 1.0f, Z_FIGHT_SCALE_Y + 1.0f, Z_FIGHT_SCALE + 1.0f);
 	}
 }
