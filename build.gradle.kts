@@ -79,6 +79,7 @@ dependencies {
 		exclude(group = "net.fabricmc.fabric-api")
 		exclude(group = "net.fabricmc")
 	}
+	modCompileOnly(libs.sodium)
 	
 	modRuntimeOnly(libs.wthit)
 	modRuntimeOnly(libs.modmenu) {
@@ -93,7 +94,6 @@ dependencies {
 	modRuntimeOnly(libs.resource.explorer)
 	modRuntimeOnly(libs.spark)
 	modRuntimeOnly(libs.sodium)
-	modRuntimeOnly(libs.indium)
 }
 
 configurations {

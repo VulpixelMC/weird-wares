@@ -15,7 +15,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.util.Set;
 
 public final class MainClient implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(Constants.MOD_NAME + "/Client");
@@ -29,7 +29,7 @@ public final class MainClient implements ClientModInitializer {
 		
 		ClientPlayerBlockBreakEvents.AFTER.register((level, _, pos, _) -> {
 			ChunkAccess chunk = level.getChunk(pos);
-			List<BlockPos> glints = DataAttachments.getGlint(chunk);
+			Set<BlockPos> glints = DataAttachments.getGlint(chunk);
 			if (glints.contains(pos)) {
 				glints.remove(pos);
 				DataAttachments.setGlint(chunk, glints);

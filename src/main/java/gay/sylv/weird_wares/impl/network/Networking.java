@@ -12,7 +12,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class Networking implements Initializable {
 	public static final Networking INSTANCE = new Networking();
@@ -47,15 +48,15 @@ public final class Networking implements Initializable {
 				return buf.readChunkPos();
 			}
 		};
-		public static final StreamCodec<RegistryFriendlyByteBuf, List<BlockPos>> POS_LIST = new StreamCodec<>() {
+		public static final StreamCodec<RegistryFriendlyByteBuf, Set<BlockPos>> POS_LIST = new StreamCodec<>() {
 			@Override
-			public void encode(RegistryFriendlyByteBuf buf, List<BlockPos> list) {
+			public void encode(RegistryFriendlyByteBuf buf, Set<BlockPos> list) {
 				buf.writeCollection(list, BlockPos.STREAM_CODEC);
 			}
 			
 			@Override
-			public @NotNull List<BlockPos> decode(RegistryFriendlyByteBuf buf) {
-				return buf.readList(BlockPos.STREAM_CODEC);
+			public @NotNull Set<BlockPos> decode(RegistryFriendlyByteBuf buf) {
+				return buf.readCollection(HashSet::new, BlockPos.STREAM_CODEC);
 			}
 		};
 		

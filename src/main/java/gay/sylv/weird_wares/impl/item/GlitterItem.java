@@ -20,8 +20,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GlitterItem extends Item {
 	public GlitterItem(Properties properties) {
@@ -53,7 +53,7 @@ public class GlitterItem extends Item {
 	public @NotNull InteractionResult useOn(UseOnContext context) {
 		BlockPos clickedPos = context.getClickedPos();
 		var chunk = context.getLevel().getChunkAt(clickedPos);
-		List<BlockPos> glints = new ArrayList<>(DataAttachments.getGlint(chunk));
+		Set<BlockPos> glints = new HashSet<>(DataAttachments.getGlint(chunk));
 		if (!glints.contains(clickedPos)) {
 			glints.add(clickedPos);
 			DataAttachments.setGlint(chunk, glints);

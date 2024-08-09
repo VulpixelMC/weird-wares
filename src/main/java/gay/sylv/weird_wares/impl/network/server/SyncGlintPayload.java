@@ -8,11 +8,11 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Set;
 
 import static gay.sylv.weird_wares.impl.util.Constants.modId;
 
-public record SyncGlintPayload(ChunkPos chunkPos, List<BlockPos> glints) implements CustomPacketPayload {
+public record SyncGlintPayload(ChunkPos chunkPos, Set<BlockPos> glints) implements CustomPacketPayload {
 	public static final Type<SyncGlintPayload> TYPE = new Type<>(modId("sync_glint"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, SyncGlintPayload> CODEC = StreamCodec.composite(
 			Networking.Codecs.CHUNK_POS, SyncGlintPayload::chunkPos,

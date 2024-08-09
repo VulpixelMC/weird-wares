@@ -7,9 +7,9 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static gay.sylv.weird_wares.impl.util.Constants.modId;
 
@@ -17,14 +17,14 @@ import static gay.sylv.weird_wares.impl.util.Constants.modId;
 public final class DataAttachments implements Initializable {
 	public static final DataAttachments INSTANCE = new DataAttachments();
 	
-	public static AttachmentType<List<BlockPos>> GLINT;
+	public static AttachmentType<Set<BlockPos>> GLINT;
 	
 	private DataAttachments() {}
 	
 	@Override
 	public void initialize() {
-		GLINT = AttachmentRegistry.<List<BlockPos>>builder()
-				.initializer(ArrayList::new)
+		GLINT = AttachmentRegistry.<Set<BlockPos>>builder()
+				.initializer(HashSet::new)
 				.persistent(Codecs.POS_LIST)
 				.buildAndRegister(modId("glint"));
 	}
@@ -41,15 +41,15 @@ public final class DataAttachments implements Initializable {
 		return chunk.getAttached(attachmentType);
 	}
 	
-	public static List<BlockPos> getGlint(ChunkAccess chunk) {
+	public static Set<BlockPos> getGlint(ChunkAccess chunk) {
 		return getAttachedOrCreate(chunk, GLINT);
 	}
 	
-	public static void setGlint(ChunkAccess chunk, List<BlockPos> glint) {
+	public static void setGlint(ChunkAccess chunk, Set<BlockPos> glint) {
 		setAttached(chunk, GLINT, glint);
 	}
 	
-	public static Optional<List<BlockPos>> getGlintOptional(ChunkAccess chunk) {
+	public static Optional<Set<BlockPos>> getGlintOptional(ChunkAccess chunk) {
 		return Optional.ofNullable(getGlint(chunk));
 	}
 }

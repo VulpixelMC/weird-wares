@@ -4,12 +4,11 @@ import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import gay.sylv.weird_wares.impl.DataAttachments;
+import gay.sylv.weird_wares.impl.compat.client.SodiumCompatibility;
 import gay.sylv.weird_wares.impl.duck.Accessor_BufferBuilder;
-import gay.sylv.weird_wares.impl.duck.Accessor_LevelRenderer;
 import gay.sylv.weird_wares.impl.util.Initializable;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
@@ -23,7 +22,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.chunk.SectionRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
@@ -37,6 +35,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @Environment(EnvType.CLIENT)
 public final class Rendering implements Initializable {
@@ -96,15 +95,12 @@ public final class Rendering implements Initializable {
 			});
 		});
 		WorldRenderEvents.BEFORE_ENTITIES.register(context -> {
-			@SuppressWarnings("resource") LevelRenderer levelRenderer = context.worldRenderer();
-			ObjectArrayList<SectionRenderDispatcher.RenderSection> visibleSections = ((Accessor_LevelRenderer) levelRenderer).weird_wares$getVisibleSections();
 			BlockModelShaper blockModelShaper = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper();
-			visibleSections.forEach(renderSection -> {
+			SodiumCompatibility.getRenderedSections(context.worldRenderer()).forEach(sectionPos -> {
 				BufferBuilder bufferBuilder;
-				SectionPos sectionPos = SectionPos.of(renderSection.getOrigin());
-				List<BlockPos> glint;
+				Set<BlockPos> glint;
 				try (ClientLevel level = context.world()) {
-					var glintOptional = DataAttachments.getGlintOptional(level.getChunkAt(renderSection.getOrigin()));
+					var glintOptional = DataAttachments.getGlintOptional(level.getChunkAt(sectionPos.origin()));
 					if (glintOptional.isPresent()) {
 						glint = glintOptional.get();
 					} else return;
@@ -148,7 +144,7 @@ public final class Rendering implements Initializable {
 									poseStack.popPose();
 								});
 						
-						if (bufferBuilder != null && ((Accessor_BufferBuilder) bufferBuilder).weird_wares$isBuilding()) {
+						if (((Accessor_BufferBuilder) bufferBuilder).weird_wares$isBuilding()) {
 							MeshData meshData = bufferBuilder.buildOrThrow();
 							VertexBuffer vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 							vertexBuffer.bind();
@@ -170,7 +166,7 @@ public final class Rendering implements Initializable {
 					// set uniforms
 					Uniform chunkOffset = shaderInstance.CHUNK_OFFSET;
 					if (chunkOffset != null) {
-						BlockPos sectionOriginBlockPos = renderSection.getOrigin();
+						BlockPos sectionOriginBlockPos = sectionPos.origin();
 						Vec3 sectionOrigin = new Vec3(sectionOriginBlockPos.getX(), sectionOriginBlockPos.getY(), sectionOriginBlockPos.getZ());
 						Vec3 cameraPos = context.camera().getPosition();
 						Vec3 pos = sectionOrigin.subtract(cameraPos);

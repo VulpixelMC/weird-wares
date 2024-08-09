@@ -21,4 +21,8 @@ public final class Constants {
 	public static boolean isClient() {
 		return isEnvironment(EnvType.CLIENT);
 	}
+	
+	public static boolean hasSodium() {
+		return FabricLoader.getInstance().isModLoaded("sodium");
+	}
 }

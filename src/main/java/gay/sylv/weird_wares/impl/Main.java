@@ -22,8 +22,8 @@ import net.minecraft.world.phys.AABB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class Main implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(Constants.MOD_NAME);
@@ -44,7 +44,7 @@ public final class Main implements ModInitializer {
 				if (!context.canPlace() || !level.getEntitiesOfClass(LivingEntity.class, new AABB(clickedPos)).isEmpty()) return InteractionResult.PASS;
 				
 				LevelChunk chunk = level.getChunkAt(clickedPos);
-				List<BlockPos> enchantedBlocks = new ArrayList<>(DataAttachments.getGlint(chunk));
+				Set<BlockPos> enchantedBlocks = new HashSet<>(DataAttachments.getGlint(chunk));
 				enchantedBlocks.add(clickedPos);
 				DataAttachments.setGlint(chunk, enchantedBlocks);
 				
@@ -58,7 +58,7 @@ public final class Main implements ModInitializer {
 		
 		PlayerBlockBreakEvents.AFTER.register((level, _, pos, _, _) -> {
 			ChunkAccess chunk = level.getChunk(pos);
-			List<BlockPos> glints = new ArrayList<>(DataAttachments.getGlint(chunk));
+			Set<BlockPos> glints = new HashSet<>(DataAttachments.getGlint(chunk));
 			if (glints.contains(pos)) {
 				glints.remove(pos);
 				DataAttachments.setGlint(chunk, glints);
