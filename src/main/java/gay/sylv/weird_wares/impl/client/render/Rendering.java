@@ -76,7 +76,7 @@ public final class Rendering implements Initializable {
 							}))
 							.setTextureState(new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, true, false))
 							.setWriteMaskState(RenderType.COLOR_WRITE)
-							.setCullState(RenderType.NO_CULL)
+							.setCullState(RenderType.CULL)
 							.setDepthTestState(RenderType.LEQUAL_DEPTH_TEST)
 							.setTransparencyState(RenderType.GLINT_TRANSPARENCY)
 							.setTexturingState(RenderType.GLINT_TEXTURING)
