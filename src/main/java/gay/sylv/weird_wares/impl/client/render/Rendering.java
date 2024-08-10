@@ -155,12 +155,19 @@ public final class Rendering implements Initializable {
 								});
 						
 						if (((Accessor_BufferBuilder) bufferBuilder).weird_wares$isBuilding()) {
-							MeshData meshData = bufferBuilder.buildOrThrow();
-							VertexBuffer vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
-							vertexBuffer.bind();
-							vertexBuffer.upload(meshData);
-							VertexBuffer.unbind();
-							glintVertexBuffer.put(sectionPos, vertexBuffer);
+							MeshData meshData = bufferBuilder.build();
+							if (meshData != null) {
+								VertexBuffer vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
+								vertexBuffer.bind();
+								vertexBuffer.upload(meshData);
+								VertexBuffer.unbind();
+								glintVertexBuffer.put(sectionPos, vertexBuffer);
+							} else {
+								VertexBuffer vertexBuffer = glintVertexBuffer.remove(sectionPos);
+								if (vertexBuffer != null) {
+									vertexBuffer.close();
+								}
+							}
 						}
 					} catch (IOException e) {
 						throw new RuntimeException(e);

@@ -1,0 +1,13 @@
+{
+	"variants": {
+		"state=inactive": {
+			"model": "weird-wares:block/nether_reactor"
+		},
+		"state=active": {
+			"model": "weird-wares:block/nether_reactor_active"
+		},
+		"state=used": {
+			"model": "weird-wares:block/nether_reactor_used"
+		}
+	}
+}

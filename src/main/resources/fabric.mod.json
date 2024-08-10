@@ -16,6 +16,9 @@
 	"icon": "assets/weird-wares/icon.png",
 	"environment": "*",
 	"entrypoints": {
+		"fabric-datagen": [
+			"gay.sylv.weird_wares.impl.datagen.DataGenerators"
+		],
 		"main": [
 			"gay.sylv.weird_wares.impl.Main"
 		],
@@ -32,7 +35,11 @@
 		"java": ">=21",
 		"fabric-api": "*"
 	},
+	"conflicts": {
+		"sodium": ">=0.6.0 <0.5.11"
+	},
 	"suggests": {
+		"quilt-loader": "0.26.x",
 		"luckperms": "*",
 		"wthit": "~fabric-12.2.2",
 		"modmenu": ">=11.0.1"

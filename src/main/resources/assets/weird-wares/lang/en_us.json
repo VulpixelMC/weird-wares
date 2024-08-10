@@ -1,4 +1,13 @@
 {
 	"item.weird-wares.glitter": "Glitter",
-	"lore.weird-wares.item.glitter": "Give your items some glint by putting glitter on them."
+	"block.weird-wares.unknown": "Unknown",
+	"block.weird-wares.info_update": "tile.info_update.name",
+	"block.weird-wares.info_update2": "tile.info_update.name",
+	"block.weird-wares.glowing_obsidian": "tile.glowingobsidian.name",
+	"block.weird-wares.nether_reactor": "Nether Reactor Core",
+	"block.weird-wares.nether_reactor.active": "Active Nether Reactor Core",
+	"block.weird-wares.nether_reactor.used": "Used Nether Reactor Core",
+	"lore.weird-wares.item.glitter": "Give your items some glint by putting glitter on them.",
+	"lore.weird-wares.block.nether_reactor": "A blast from the past!",
+	"creative_mode_tab.weird-wares.weird_wares": "Weird Wares"
 }

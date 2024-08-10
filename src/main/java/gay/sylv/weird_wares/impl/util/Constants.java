@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 public final class Constants {
 	public static final String MOD_ID = "weird-wares";
 	public static final String MOD_NAME = "Weird Wares";
+	public static final float INFINITE_BLAST_RESISTANCE = 3_600_000.0f;
 	
 	private Constants() {}
 	

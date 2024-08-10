@@ -1,8 +1,10 @@
 package gay.sylv.weird_wares.impl;
 
+import gay.sylv.weird_wares.impl.block.Blocks;
 import gay.sylv.weird_wares.impl.client.render.Rendering;
 import gay.sylv.weird_wares.impl.entity.Entities;
 import gay.sylv.weird_wares.impl.item.Items;
+import gay.sylv.weird_wares.impl.item.group.CreativeModeTabs;
 import gay.sylv.weird_wares.impl.network.Networking;
 import gay.sylv.weird_wares.impl.util.Constants;
 import net.fabricmc.api.ModInitializer;
@@ -34,6 +36,8 @@ public final class Main implements ModInitializer {
 		DataAttachments.INSTANCE.initialize();
 		Entities.INSTANCE.initialize();
 		Items.INSTANCE.initialize();
+		Blocks.INSTANCE.initialize();
+		CreativeModeTabs.INSTANCE.initialize();
 		
 		UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
 			ItemStack itemStack = player.getItemInHand(hand);

@@ -17,11 +17,15 @@ import java.util.stream.Collectors;
 
 /**
  * A utility class for Sodium compatibility.
- * <h2>Warning!</h2>
- * This class is not guaranteed to maintain compatibility between Sodium versions.
  */
 @Environment(EnvType.CLIENT)
 public final class SodiumCompatibility {
+	/**
+	 * <h2>Warning!</h2>
+	 * This method is not guaranteed to maintain compatibility between Sodium versions.
+	 * @param levelRenderer the context's {@link LevelRenderer}.
+	 * @return The sections that are currently being rendered.
+	 */
 	public static Set<SectionPos> getRenderedSections(LevelRenderer levelRenderer) {
 		if (Constants.hasSodium() && Minecraft.getInstance().cameraEntity != null) {
 			int renderDistance = Minecraft.getInstance().options.getEffectiveRenderDistance();
