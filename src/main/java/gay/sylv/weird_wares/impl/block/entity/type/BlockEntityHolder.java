@@ -26,5 +26,5 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 /**
  * Holds a {@link Block} and a {@link BlockItem} and a {@link BlockEntityType}.
  */
-public record BlockEntityHolder<I extends Item, BE extends BlockEntity>(Block block, I item, BlockEntityType<BE> type) {
+public record BlockEntityHolder<B extends Block, I extends Item, BE extends BlockEntity>(B block, I item, BlockEntityType<BE> type) {
 }

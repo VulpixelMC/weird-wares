@@ -42,11 +42,11 @@ import static gay.sylv.weird_wares.impl.util.Constants.modId;
 public final class Blocks implements Initializable {
 	public static final Blocks INSTANCE = new Blocks();
 	
-	public static BlockHolder<BlockItem> UNKNOWN;
-	public static BlockHolder<BlockItem> INFO_UPDATE;
-	public static BlockHolder<BlockItem> INFO_UPDATE2;
-	public static BlockHolder<BlockItem> GLOWING_OBSIDIAN;
-	public static CustomBlockHolder<NetherReactor, BlockItem> NETHER_REACTOR;
+	public static BlockHolder<Block, BlockItem> UNKNOWN;
+	public static BlockHolder<Block, BlockItem> INFO_UPDATE;
+	public static BlockHolder<Block, BlockItem> INFO_UPDATE2;
+	public static BlockHolder<Block, BlockItem> GLOWING_OBSIDIAN;
+	public static BlockHolder<NetherReactorBlock, BlockItem> NETHER_REACTOR;
 	
 	private Blocks() {}
 	
@@ -86,11 +86,12 @@ public final class Blocks implements Initializable {
 								.lightLevel(_ -> 12)
 				)
 		);
-		NETHER_REACTOR = registerCustom(
+		NETHER_REACTOR = register(
 				"nether_reactor",
-				new NetherReactor(
+				new NetherReactorBlock(
 						BlockBehaviour.Properties.of()
 								.strength(3.0f, 6.0f)
+								.requiresCorrectToolForDrops()
 				)
 		);
 		
@@ -103,27 +104,23 @@ public final class Blocks implements Initializable {
 		return Registry.register(BuiltInRegistries.BLOCK, modId(id), block);
 	}
 	
-	private static BlockHolder<BlockItem> register(@NotNull String id, Block block) {
+	private static <B extends Block> BlockHolder<B, BlockItem> register(@NotNull String id, B block) {
 		return register(id, block, new BlockItem(block, new Item.Properties()));
 	}
 	
-	private static <I extends Item> BlockHolder<I> register(@NotNull String id, Block block, I item) {
+	private static <B extends Block, I extends Item> BlockHolder<B, I> register(@NotNull String id, B block, I item) {
 		block = registerBlock(id, block);
 		item = Registry.register(BuiltInRegistries.ITEM, modId(id), item);
 		return new BlockHolder<>(block, item);
 	}
 	
-	private static <B extends Block> CustomBlockHolder<B, BlockItem> registerCustom(@NotNull String id, B block) {
-		return Conversions.convert(register(id, block));
-	}
-	
-	private static <I extends Item, BE extends BlockEntity> BlockEntityHolder<I, BE> registerBlockEntityItem(@NotNull String id, Block block, BlockEntityType.BlockEntitySupplier<BE> supplier, I item) {
-		BlockHolder<I> holder = register(id, block, item);
+	private static <B extends Block, I extends Item, BE extends BlockEntity> BlockEntityHolder<B, I, BE> registerBlockEntityItem(@NotNull String id, B block, BlockEntityType.BlockEntitySupplier<BE> supplier, I item) {
+		BlockHolder<B, I> holder = register(id, block, item);
 		BlockEntityType<BE> type = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, modId(id), BlockEntityType.Builder.of(supplier, block).build());
 		return Conversions.convert(holder, type);
 	}
 	
-	private static <BE extends BlockEntity> BlockEntityHolder<BlockItem, BE> registerBlockEntityItem(@NotNull String id, Block block, BlockEntityType.BlockEntitySupplier<BE> supplier) {
+	private static <B extends Block, BE extends BlockEntity> BlockEntityHolder<B, BlockItem, BE> registerBlockEntityItem(@NotNull String id, B block, BlockEntityType.BlockEntitySupplier<BE> supplier) {
 		return registerBlockEntityItem(id, block, supplier, new BlockItem(block, new Item.Properties()));
 	}
 	
@@ -132,7 +129,7 @@ public final class Blocks implements Initializable {
 		
 		private BlockRendering() {}
 		
-		private static <I extends Item, BE extends BlockEntity> void register(@NotNull BlockEntityHolder<I, BE> holder, BlockEntityRendererProvider<BE> rendererProvider) {
+		private static <B extends Block, I extends Item, BE extends BlockEntity> void register(@NotNull BlockEntityHolder<B, I, BE> holder, BlockEntityRendererProvider<BE> rendererProvider) {
 			BlockEntityRenderers.register(holder.type(), rendererProvider);
 		}
 		

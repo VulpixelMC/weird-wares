@@ -18,7 +18,6 @@
 package gay.sylv.weird_wares.impl.util;
 
 import gay.sylv.weird_wares.impl.block.BlockHolder;
-import gay.sylv.weird_wares.impl.block.CustomBlockHolder;
 import gay.sylv.weird_wares.impl.block.entity.type.BlockEntityHolder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -28,12 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 public final class Conversions {
 	private Conversions() {}
 	
-	public static <I extends Item, BE extends BlockEntity> BlockEntityHolder<I, BE> convert(BlockHolder<I> holder, BlockEntityType<BE> type) {
+	public static <B extends Block, I extends Item, BE extends BlockEntity> BlockEntityHolder<B, I, BE> convert(BlockHolder<B, I> holder, BlockEntityType<BE> type) {
 		return new BlockEntityHolder<>(holder.block(), holder.item(), type);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static <B extends Block, I extends Item> CustomBlockHolder<B, I> convert(BlockHolder<I> holder) {
-		return new CustomBlockHolder<>((B) holder.block(), holder.item());
 	}
 }

@@ -1,5 +1,6 @@
 package gay.sylv.weird_wares.impl;
 
+import gay.sylv.weird_wares.api.GlintData;
 import gay.sylv.weird_wares.impl.util.Codecs;
 import gay.sylv.weird_wares.impl.util.Initializable;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
@@ -14,7 +15,7 @@ import java.util.Set;
 import static gay.sylv.weird_wares.impl.util.Constants.modId;
 
 @SuppressWarnings({"unused", "UnstableApiUsage"})
-public final class DataAttachments implements Initializable {
+public final class DataAttachments implements Initializable, GlintData {
 	public static final DataAttachments INSTANCE = new DataAttachments();
 	
 	public static AttachmentType<Set<BlockPos>> GLINT;

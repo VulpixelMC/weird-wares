@@ -27,6 +27,7 @@ public final class DataGenerators implements DataGeneratorEntrypoint {
 			dropSelf(Blocks.INFO_UPDATE.block());
 			dropSelf(Blocks.INFO_UPDATE2.block());
 			dropSelf(Blocks.GLOWING_OBSIDIAN.block());
+			dropSelf(Blocks.NETHER_REACTOR.block());
 		}
 	}
 }
