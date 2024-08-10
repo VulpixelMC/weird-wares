@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 /**
  * A grab-gab of functional utilities.
  */
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class Functional {
 	private Functional() {}
 	

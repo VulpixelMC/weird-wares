@@ -17,6 +17,7 @@
  */
 package gay.sylv.weird_wares.impl.util;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public class ImmutablePair<T, U> {
 	protected T first;
 	protected U second;

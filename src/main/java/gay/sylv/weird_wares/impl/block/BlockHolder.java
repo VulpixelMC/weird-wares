@@ -25,5 +25,6 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Holds a {@link Block} and a {@link BlockItem}.
  */
+@org.jetbrains.annotations.ApiStatus.Internal
 public record BlockHolder<B extends Block, I extends ItemLike>(@NotNull B block, @NotNull I item) {
 }

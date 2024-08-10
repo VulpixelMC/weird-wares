@@ -12,6 +12,7 @@ import java.util.Set;
 
 import static gay.sylv.weird_wares.impl.util.Constants.modId;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public record SyncGlintPayload(ChunkPos chunkPos, Set<BlockPos> glints) implements CustomPacketPayload {
 	public static final Type<SyncGlintPayload> TYPE = new Type<>(modId("sync_glint"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, SyncGlintPayload> CODEC = StreamCodec.composite(

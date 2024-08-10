@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static gay.sylv.weird_wares.impl.util.Constants.modId;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public record RequestGlintSyncPayload(ChunkPos chunkPos) implements CustomPacketPayload {
 	public static final Type<RequestGlintSyncPayload> TYPE = new Type<>(modId("request_glint_sync"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, RequestGlintSyncPayload> CODEC = StreamCodec.composite(

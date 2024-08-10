@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 /**
  * Handles packets received on the client-side.
  */
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class ClientPackets implements Initializable {
 	public static final ClientPackets INSTANCE = new ClientPackets();
 	

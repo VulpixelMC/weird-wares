@@ -8,6 +8,7 @@ import net.minecraft.world.entity.EntityType;
 
 import static gay.sylv.weird_wares.impl.util.Constants.modId;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class Entities implements Initializable {
 	public static final Entities INSTANCE = new Entities();
 	

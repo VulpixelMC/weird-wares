@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public class GlitterItem extends Item {
 	public GlitterItem(Properties properties) {
 		super(properties);

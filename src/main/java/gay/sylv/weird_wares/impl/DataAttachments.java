@@ -15,6 +15,7 @@ import java.util.Set;
 import static gay.sylv.weird_wares.impl.util.Constants.modId;
 
 @SuppressWarnings({"unused", "UnstableApiUsage"})
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class DataAttachments implements Initializable, GlintData {
 	public static final DataAttachments INSTANCE = new DataAttachments();
 	

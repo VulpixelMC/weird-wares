@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class Conversions {
 	private Conversions() {}
 	

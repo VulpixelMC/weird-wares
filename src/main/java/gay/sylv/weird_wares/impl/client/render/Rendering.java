@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 @Environment(EnvType.CLIENT)
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class Rendering implements Initializable {
 	public static final Rendering INSTANCE = new Rendering();
 	public static final Direction[] DIRECTIONS = Direction.values();

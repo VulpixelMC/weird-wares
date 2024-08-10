@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
  * A utility class for Sodium compatibility.
  */
 @Environment(EnvType.CLIENT)
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class SodiumCompatibility {
 	/**
 	 * <h2>Warning!</h2>

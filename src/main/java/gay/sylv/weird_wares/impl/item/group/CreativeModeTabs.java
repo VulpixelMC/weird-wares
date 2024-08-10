@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 
 import static gay.sylv.weird_wares.impl.util.Constants.modId;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class CreativeModeTabs implements Initializable {
 	public static final CreativeModeTabs INSTANCE = new CreativeModeTabs();
 	

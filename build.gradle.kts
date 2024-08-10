@@ -103,6 +103,20 @@ configurations {
 	}
 }
 
+tasks.create("markImplInternal") {
+	description = "Marks all implementation classes with @ApiStatus.Internal"
+	fileTree("${project.projectDir}/src/main/java/gay/sylv/weird_wares/impl").matching {
+		include("**/*.java")
+	}.forEach {
+		var contents = it.readText(charset = Charsets.UTF_8) // this project uses UTF-8
+		val pattern = "^(?<whitespace>[^\\S\\n]*)(?<classKeywords>(public )*(static )*(final )*(class|record|interface)+ )".toRegex(RegexOption.MULTILINE)
+		if (!contents.contains("@org.jetbrains.annotations.ApiStatus.Internal")) {
+			contents = contents.replace(pattern) { match -> "${match.groups["whitespace"]?.value ?: ""}@org.jetbrains.annotations.ApiStatus.Internal\n${match.groups["whitespace"]?.value ?: ""}${match.groups["classKeywords"]!!.value}" }
+			it.writeText(contents)
+		}
+	}
+}
+
 tasks.processResources {
 	inputs.property("version", version)
 	
@@ -166,6 +180,8 @@ tasks.license.configure {
 tasks.build {
 	dependsOn(tasks.licenseFormat)
 	dependsOn(tasks.license)
+	dependsOn(tasks["markImplInternal"])
+	mustRunAfter(tasks["markImplInternal"])
 }
 
 tasks.withType<License> {

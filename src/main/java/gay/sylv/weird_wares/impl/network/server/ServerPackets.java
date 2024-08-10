@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 /**
  * Handles packets received on the server-side.
  */
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class ServerPackets implements Initializable {
 	public static final ServerPackets INSTANCE = new ServerPackets();
 	

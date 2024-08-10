@@ -17,6 +17,7 @@
  */
 package gay.sylv.weird_wares.impl.util;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public class Pair<T, U> extends ImmutablePair<T, U> {
 	public Pair(T first, U second) {
 		super(first, second);

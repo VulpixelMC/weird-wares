@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class MainClient implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(Constants.MOD_NAME + "/Client");
 	

@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public class NetherReactorBlock extends BaseEntityBlock {
 	public static final MapCodec<NetherReactorBlock> CODEC = simpleCodec(NetherReactorBlock::new);
 	public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
@@ -49,6 +50,7 @@ public class NetherReactorBlock extends BaseEntityBlock {
 		super.playerDestroy(level, player, pos, state, blockEntity, tool);
 	}
 	
+	@org.jetbrains.annotations.ApiStatus.Internal
 	public static class NetherReactorBlockEntity extends BlockEntity {
 		public NetherReactorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
 			super(type, pos, blockState);

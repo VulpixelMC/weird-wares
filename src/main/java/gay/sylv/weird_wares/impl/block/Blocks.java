@@ -39,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static gay.sylv.weird_wares.impl.util.Constants.modId;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class Blocks implements Initializable {
 	public static final Blocks INSTANCE = new Blocks();
 	
@@ -124,6 +125,7 @@ public final class Blocks implements Initializable {
 		return registerBlockEntityItem(id, block, supplier, new BlockItem(block, new Item.Properties()));
 	}
 	
+	@org.jetbrains.annotations.ApiStatus.Internal
 	public static final class BlockRendering implements Initializable {
 		public static final BlockRendering INSTANCE = new BlockRendering();
 		

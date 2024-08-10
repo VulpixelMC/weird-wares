@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class Constants {
 	public static final String MOD_ID = "weird-wares";
 	public static final String MOD_NAME = "Weird Wares";

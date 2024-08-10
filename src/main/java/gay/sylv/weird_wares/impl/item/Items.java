@@ -12,6 +12,7 @@ import java.util.List;
 
 import static gay.sylv.weird_wares.impl.util.Constants.modId;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class Items implements Initializable {
 	public static final Items INSTANCE = new Items();
 	

@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
+@org.jetbrains.annotations.ApiStatus.Internal
 public final class Networking implements Initializable {
 	public static final Networking INSTANCE = new Networking();
 	
@@ -36,6 +37,7 @@ public final class Networking implements Initializable {
 		PayloadTypeRegistry.playC2S().register(type, codec);
 	}
 	
+	@org.jetbrains.annotations.ApiStatus.Internal
 	public static final class Codecs {
 		public static final StreamCodec<RegistryFriendlyByteBuf, ChunkPos> CHUNK_POS = new StreamCodec<>() {
 			@Override
