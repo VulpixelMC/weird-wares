@@ -50,7 +50,7 @@ public final class Blocks implements Initializable {
 				"unknown",
 				new Block(
 						BlockBehaviour.Properties.of()
-								.isValidSpawn((_, _, _, _) -> true)
+								.isValidSpawn((blockState, blockGetter, blockPos, entityType) -> true)
 								.instabreak()
 								.mapColor(MapColor.DIRT)
 								.friction(0.98f)
@@ -61,7 +61,7 @@ public final class Blocks implements Initializable {
 				new Block(
 						BlockBehaviour.Properties.of()
 								.sound(SoundType.GRAVEL)
-								.isValidSpawn((_, _, _, _) -> true)
+								.isValidSpawn((blockState, blockGetter, blockPos, entityType) -> true)
 								.strength(0.0f, Constants.INFINITE_BLAST_RESISTANCE)
 								.mapColor(MapColor.COLOR_LIGHT_GREEN)
 				)
@@ -76,8 +76,8 @@ public final class Blocks implements Initializable {
 				"glowing_obsidian",
 				new Block(
 						BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.OBSIDIAN)
-								.emissiveRendering((_, _, _) -> true)
-								.lightLevel(_ -> 12)
+								.emissiveRendering((blockState, blockGetter, blockPos) -> true)
+								.lightLevel(blockState -> 12)
 				)
 		);
 		

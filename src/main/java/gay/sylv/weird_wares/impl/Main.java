@@ -69,7 +69,7 @@ public final class Main implements ModInitializer {
 			return InteractionResult.PASS;
 		});
 		
-		PlayerBlockBreakEvents.AFTER.register((level, _, pos, _, _) -> {
+		PlayerBlockBreakEvents.AFTER.register((level, player, pos, blockState, blockEntity) -> {
 			ChunkAccess chunk = level.getChunk(pos);
 			Set<BlockPos> glints = new HashSet<>(DataAttachments.getGlint(chunk));
 			if (glints.contains(pos)) {

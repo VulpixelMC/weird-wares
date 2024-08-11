@@ -94,7 +94,7 @@ public final class Rendering implements Initializable {
 			GLINT_FORMAT = TERRAIN_GLINT.format();
 			GLINT_MODE = TERRAIN_GLINT.mode();
 		});
-		ClientChunkEvents.CHUNK_UNLOAD.register((_, chunk) -> {
+		ClientChunkEvents.CHUNK_UNLOAD.register((clientLevel, chunk) -> {
 			var glint = DataAttachments.getGlint(chunk);
 			glint.forEach(pos -> {
 				SectionPos sectionPos = SectionPos.of(pos);

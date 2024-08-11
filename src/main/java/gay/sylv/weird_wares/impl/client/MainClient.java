@@ -33,9 +33,9 @@ public final class MainClient implements ClientModInitializer {
 		Rendering.INSTANCE.initialize();
 		ClientPackets.INSTANCE.initialize();
 		
-		ClientChunkEvents.CHUNK_LOAD.register((_, chunk) -> ClientPlayNetworking.send(new RequestGlintSyncPayload(chunk.getPos())));
+		ClientChunkEvents.CHUNK_LOAD.register((clientLevel, chunk) -> ClientPlayNetworking.send(new RequestGlintSyncPayload(chunk.getPos())));
 		
-		ClientPlayerBlockBreakEvents.AFTER.register((level, _, pos, _) -> {
+		ClientPlayerBlockBreakEvents.AFTER.register((level, localPlayer, pos, blockState) -> {
 			ChunkAccess chunk = level.getChunk(pos);
 			Set<BlockPos> glints = DataAttachments.getGlint(chunk);
 			if (glints.contains(pos)) {
