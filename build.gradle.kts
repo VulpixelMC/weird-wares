@@ -191,7 +191,15 @@ tasks.withType<License> {
 
 // Configure the maven publication
 publishing {
-	publications { }
+	publications {
+		create<MavenPublication>("maven") {
+			groupId = mavenGroup
+			artifactId = modId
+			version = modVersion
+			
+			from(components["java"])
+		}
+	}
 	
 	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
@@ -199,5 +207,12 @@ publishing {
 		// Notice: This block does NOT have the same function as the block in the top level.
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
+		maven {
+			url = uri("https://maven.muonmc.org/releases")
+			credentials {
+				username = System.getenv("MAVEN_USERNAME")
+				password = System.getenv("MAVEN_PASSWORD")
+			}
+		}
 	}
 }
