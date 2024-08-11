@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "IDI",
+    "IDI",
+    "IDI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "weird-wares:nether_reactor"
+  }
+}

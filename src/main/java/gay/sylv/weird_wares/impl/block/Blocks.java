@@ -17,6 +17,7 @@
  */
 package gay.sylv.weird_wares.impl.block;
 
+import gay.sylv.weird_wares.impl.block.NetherReactorBlock.NetherReactorBlockEntity;
 import gay.sylv.weird_wares.impl.block.entity.type.BlockEntityHolder;
 import gay.sylv.weird_wares.impl.util.Constants;
 import gay.sylv.weird_wares.impl.util.Conversions;
@@ -27,6 +28,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -47,7 +49,8 @@ public final class Blocks implements Initializable {
 	public static BlockHolder<Block, BlockItem> INFO_UPDATE;
 	public static BlockHolder<Block, BlockItem> INFO_UPDATE2;
 	public static BlockHolder<Block, BlockItem> GLOWING_OBSIDIAN;
-	public static BlockHolder<NetherReactorBlock, BlockItem> NETHER_REACTOR;
+	
+	public static BlockEntityHolder<NetherReactorBlock, BlockItem, NetherReactorBlockEntity> NETHER_REACTOR;
 	
 	private Blocks() {}
 	
@@ -87,13 +90,16 @@ public final class Blocks implements Initializable {
 								.lightLevel(_ -> 12)
 				)
 		);
-		NETHER_REACTOR = register(
+		
+		NETHER_REACTOR = registerBlockEntityItem(
 				"nether_reactor",
 				new NetherReactorBlock(
 						BlockBehaviour.Properties.of()
 								.strength(3.0f, 6.0f)
 								.requiresCorrectToolForDrops()
-				)
+								.sound(SoundTypes.NETHER_REACTOR)
+				),
+				NetherReactorBlockEntity::new
 		);
 		
 		if (Constants.isClient()) {
@@ -138,5 +144,11 @@ public final class Blocks implements Initializable {
 		private static void addRenderType(Block block, RenderType renderType) {
 			BlockRenderLayerMap.INSTANCE.putBlock(block, renderType);
 		}
+	}
+	
+	private static class SoundTypes {
+		public static final net.minecraft.world.level.block.SoundType NETHER_REACTOR = new net.minecraft.world.level.block.SoundType(
+				1.0F, 1.2F, SoundEvents.STONE_BREAK, SoundEvents.STONE_STEP, SoundEvents.STONE_PLACE, SoundEvents.STONE_HIT, SoundEvents.STONE_FALL
+		);
 	}
 }

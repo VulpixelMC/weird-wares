@@ -1,4 +1,6 @@
-// 1.21	2024-08-09T19:11:58.2139318	Weird Wares/Block Loot Tables
+// 1.21	2024-08-10T23:06:01.4255333	Weird Wares/Block Loot Tables
 b067e1c28e6a3dd80c8e8f8112ff515818ed7f7e data\weird-wares\loot_table\blocks\info_update2.json
+8af4a3705fa43808c5c8163a32ce3d4386e02a35 data\weird-wares\loot_table\blocks\nether_reactor.json
 658feebf23aee6a041611d944258b22345dae84d data\weird-wares\loot_table\blocks\unknown.json
+f719fbbdcd58629d0beee505f9b77b993e53934d data\weird-wares\loot_table\blocks\glowing_obsidian.json
 4c4781fe7ce0d72d51c0f347d85a09ba9ce63964 data\weird-wares\loot_table\blocks\info_update.json

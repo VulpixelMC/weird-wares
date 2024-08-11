@@ -9,5 +9,9 @@
 	"block.weird-wares.nether_reactor.used": "Used Nether Reactor Core",
 	"lore.weird-wares.item.glitter": "Give your items some glint by putting glitter on them.",
 	"lore.weird-wares.block.nether_reactor": "A blast from the past!",
-	"creative_mode_tab.weird-wares.weird_wares": "Weird Wares"
+	"creative_mode_tab.weird-wares.weird_wares": "Weird Wares",
+	"chat.weird-wares.nether_reactor.active": "Active!",
+	"chat.weird-wares.nether_reactor.incorrect_pattern": "Not the correct pattern!",
+	"chat.weird-wares.nether_reactor.proximity": "All players need to be close to the reactor.",
+	"chat.weird-wares.nether_reactor.height_threshold": "The nether reactor needs to be built lower down."
 }

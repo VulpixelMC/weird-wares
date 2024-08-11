@@ -39,6 +39,7 @@ public final class Main implements ModInitializer {
 		Items.INSTANCE.initialize();
 		Blocks.INSTANCE.initialize();
 		CreativeModeTabs.INSTANCE.initialize();
+		LootTables.INSTANCE.initialize();
 		
 		UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
 			ItemStack itemStack = player.getItemInHand(hand);

@@ -1,6 +1,5 @@
 package gay.sylv.weird_wares.impl;
 
-import gay.sylv.weird_wares.api.GlintData;
 import gay.sylv.weird_wares.impl.util.Codecs;
 import gay.sylv.weird_wares.impl.util.Initializable;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
@@ -16,7 +15,7 @@ import static gay.sylv.weird_wares.impl.util.Constants.modId;
 
 @SuppressWarnings({"unused", "UnstableApiUsage"})
 @org.jetbrains.annotations.ApiStatus.Internal
-public final class DataAttachments implements Initializable, GlintData {
+public final class DataAttachments implements Initializable {
 	public static final DataAttachments INSTANCE = new DataAttachments();
 	
 	public static AttachmentType<Set<BlockPos>> GLINT;
@@ -43,6 +42,10 @@ public final class DataAttachments implements Initializable, GlintData {
 		return chunk.getAttached(attachmentType);
 	}
 	
+	public static <A> void removeAttached(ChunkAccess chunk, AttachmentType<A> attachmentType) {
+		chunk.removeAttached(attachmentType);
+	}
+	
 	public static Set<BlockPos> getGlint(ChunkAccess chunk) {
 		return getAttachedOrCreate(chunk, GLINT);
 	}
@@ -53,5 +56,9 @@ public final class DataAttachments implements Initializable, GlintData {
 	
 	public static Optional<Set<BlockPos>> getGlintOptional(ChunkAccess chunk) {
 		return Optional.ofNullable(getGlint(chunk));
+	}
+	
+	public static void removeGlint(ChunkAccess chunk) {
+		removeAttached(chunk, GLINT);
 	}
 }

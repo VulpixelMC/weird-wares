@@ -109,7 +109,7 @@ tasks.create("markImplInternal") {
 		include("**/*.java")
 	}.forEach {
 		var contents = it.readText(charset = Charsets.UTF_8) // this project uses UTF-8
-		val pattern = "^(?<whitespace>[^\\S\\n]*)(?<classKeywords>(public )*(static )*(final )*(class|record|interface)+ )".toRegex(RegexOption.MULTILINE)
+		val pattern = "^(?<whitespace>[^\\S\\n]*)(?<classKeywords>(private |public )*(static )*(final )*(class|record|interface)+ )".toRegex(RegexOption.MULTILINE)
 		if (!contents.contains("@org.jetbrains.annotations.ApiStatus.Internal")) {
 			contents = contents.replace(pattern) { match -> "${match.groups["whitespace"]?.value ?: ""}@org.jetbrains.annotations.ApiStatus.Internal\n${match.groups["whitespace"]?.value ?: ""}${match.groups["classKeywords"]!!.value}" }
 			it.writeText(contents)
@@ -146,7 +146,7 @@ fabricApi {
 
 java {
 	// Still required by IDEs such as Eclipse and Visual Studio Code
-	sourceCompatibility = JavaVersion.VERSION_22
+	sourceCompatibility = JavaVersion.VERSION_21
 	targetCompatibility = JavaVersion.VERSION_21
 	
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task if it is present.
