@@ -1,0 +1,31 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
+
+name: Publish to Maven
+
+on:
+  workflow_dispatch:
+  release:
+    types: [created]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read|write
+
+    steps:
+    - name: Upload To Github Release
+      uses: xresloader/upload-to-github-release@v1.6.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        file: "build/libs/*.jar"
+      update_latest_release: true
+      overwrite: true
+
