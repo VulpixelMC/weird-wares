@@ -16,6 +16,7 @@ public final class Constants {
 	public static final String MOD_ID = "weird-wares";
 	public static final String MOD_NAME = "Weird Wares";
 	public static final float INFINITE_BLAST_RESISTANCE = 3_600_000.0f;
+	public static final float LEFT_HANDEDNESS_OCCURRENCE = 0.1f; // 10% of people are left-handed
 	
 	private Constants() {}
 	

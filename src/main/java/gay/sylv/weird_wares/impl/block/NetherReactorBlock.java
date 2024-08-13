@@ -10,6 +10,8 @@ package gay.sylv.weird_wares.impl.block;
 import com.mojang.serialization.MapCodec;
 import gay.sylv.weird_wares.impl.LootTables;
 import gay.sylv.weird_wares.impl.Main;
+import gay.sylv.weird_wares.impl.util.Assertions;
+import gay.sylv.weird_wares.impl.util.Constants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -30,6 +32,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -199,9 +202,14 @@ public class NetherReactorBlock extends BaseEntityBlock {
 							Vec3 mobPos = randomPos(pos, level.random);
 							assert zombifiedPiglin != null;
 							zombifiedPiglin.setPos(mobPos);
+							if (level.random.nextFloat() <= Constants.LEFT_HANDEDNESS_OCCURRENCE) {
+								zombifiedPiglin.setLeftHanded(true);
+							}
+							zombifiedPiglin.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.GOLDEN_SWORD));
 							level.addFreshEntity(zombifiedPiglin);
 						}
 					}
+					Assertions.check(hasSpawned, "Failed to spawn at least one Zombified Piglin.");
 					
 					BlockPos upPos = pos.above();
 					BlockPos downPos = pos.below();
