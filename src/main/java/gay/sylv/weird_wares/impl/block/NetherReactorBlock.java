@@ -190,26 +190,29 @@ public class NetherReactorBlock extends BaseEntityBlock {
 					blockEntity.progress = blockEntity.progress.next();
 					
 					boolean hasSpawned = false;
-					for (int i = 0; i < 4; i++) {
-						boolean willSpawn = level.random.nextBoolean();
-						if (!hasSpawned && i == 3) {
-							willSpawn = true; // spawn no matter what
+					if (blockEntity.progress.ordinal() >= Progress.MID1.ordinal() && blockEntity.progress.ordinal() < Progress.FINISH1.ordinal()) {
+						for (int i = 0; i < 4; i++) {
+							boolean willSpawn = level.random.nextBoolean();
+							if (!hasSpawned && i == 3) {
+								willSpawn = true; // spawn no matter what
+							}
+							
+							if (willSpawn) {
+								hasSpawned = true;
+								ZombifiedPiglin zombifiedPiglin = EntityType.ZOMBIFIED_PIGLIN.create(level);
+								Vec3 mobPos = randomPos(pos, level.random);
+								assert zombifiedPiglin != null;
+								zombifiedPiglin.setPos(mobPos);
+								if (level.random.nextFloat() <= Constants.LEFT_HANDEDNESS_OCCURRENCE) {
+									zombifiedPiglin.setLeftHanded(true);
+								}
+								zombifiedPiglin.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.GOLDEN_SWORD));
+								level.addFreshEntity(zombifiedPiglin);
+							}
 						}
 						
-						if (willSpawn && blockEntity.progress.ordinal() >= Progress.MID1.ordinal() && blockEntity.progress.ordinal() < Progress.FINISH1.ordinal()) {
-							hasSpawned = true;
-							ZombifiedPiglin zombifiedPiglin = EntityType.ZOMBIFIED_PIGLIN.create(level);
-							Vec3 mobPos = randomPos(pos, level.random);
-							assert zombifiedPiglin != null;
-							zombifiedPiglin.setPos(mobPos);
-							if (level.random.nextFloat() <= Constants.LEFT_HANDEDNESS_OCCURRENCE) {
-								zombifiedPiglin.setLeftHanded(true);
-							}
-							zombifiedPiglin.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.GOLDEN_SWORD));
-							level.addFreshEntity(zombifiedPiglin);
-						}
+						Assertions.check(hasSpawned, "Failed to spawn at least one Zombified Piglin.");
 					}
-					Assertions.check(hasSpawned, "Failed to spawn at least one Zombified Piglin.");
 					
 					BlockPos upPos = pos.above();
 					BlockPos downPos = pos.below();
