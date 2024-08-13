@@ -20,6 +20,21 @@ jobs:
       contents: write
 
     steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+        settings-path: ${{ github.workspace }} # location for the settings.xml file
+    
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda # v3.4.2
+    
+    - name: Build with Gradle
+      run: ./gradlew build
+    
     - name: Upload To Github Release
       uses: xresloader/upload-to-github-release@v1.6.0
       env:
