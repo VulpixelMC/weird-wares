@@ -10,7 +10,7 @@ package gay.sylv.weird_wares.impl.compat.client;
 import gay.sylv.weird_wares.impl.duck.Accessor_LevelRenderer;
 import gay.sylv.weird_wares.impl.util.Constants;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import me.jellysquid.mods.sodium.client.render.SodiumWorldRenderer;
+import net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
