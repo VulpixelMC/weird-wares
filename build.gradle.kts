@@ -96,13 +96,6 @@ dependencies {
 	modRuntimeOnly(libs.sodium)
 }
 
-configurations {
-	runtimeClasspath {
-		// remove duplicate fabric-loader
-		exclude(group = "net.fabricmc", module = "fabric-loader")
-	}
-}
-
 tasks.create("markImplInternal") {
 	description = "Marks all implementation classes with @ApiStatus.Internal"
 	fileTree("${project.projectDir}/src/main/java/gay/sylv/weird_wares/impl").matching {
