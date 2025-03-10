@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.chunk.SectionRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
+import net.minecraft.util.Mth;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ public final class SodiumCompatibility {
 	 */
 	public static Set<SectionPos> getRenderedSections(LevelRenderer levelRenderer) {
 		if (Constants.hasSodium() && Minecraft.getInstance().cameraEntity != null) {
-			int renderDistance = Minecraft.getInstance().options.getEffectiveRenderDistance();
+			int renderDistance = Mth.clamp(Minecraft.getInstance().options.getEffectiveRenderDistance(), 0, 8);
 			return SectionPos.cube(SectionPos.of(Minecraft.getInstance().cameraEntity.position()), renderDistance)
 					.filter(sectionPos -> {
 						BlockPos origin = sectionPos.origin();
