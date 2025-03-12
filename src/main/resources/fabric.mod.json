@@ -36,7 +36,7 @@
 		"fabric-api": "*"
 	},
 	"conflicts": {
-		"sodium": "0.6.x"
+		"sodium": ">0.6 <=0.5"
 	},
 	"suggests": {
 		"quilt-loader": "0.26.x",
