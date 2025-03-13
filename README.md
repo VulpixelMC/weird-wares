@@ -29,3 +29,6 @@ You may use this mod in your Modpack provided you give adequate and direct credi
 
 ## License
 By contributing, you agree to the license terms found in LICENSE. You may create forks for the purpose of contributing code upstream.
+
+## Special Thanks To...
+ - Oliver-makes-code for helping with asset creation.
