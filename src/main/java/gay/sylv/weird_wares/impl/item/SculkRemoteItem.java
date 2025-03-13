@@ -96,7 +96,7 @@ public class SculkRemoteItem extends Item {
 			);
 			level.playSound(
 					null,
-					remoteTarget.pos(),
+					player,
 					SoundEvents.SCULK_CLICKING,
 					SoundSource.PLAYERS,
 					1.0f,

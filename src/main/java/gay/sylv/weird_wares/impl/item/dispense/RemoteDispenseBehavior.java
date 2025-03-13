@@ -5,6 +5,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +27,14 @@ public class RemoteDispenseBehavior extends DefaultDispenseItemBehavior {
 	
 	@Override
 	protected void playSound(BlockSource blockSource) {
+		blockSource.level().playSound(
+				null,
+				blockSource.pos(),
+				SoundEvents.SCULK_CLICKING,
+				SoundSource.PLAYERS,
+				1.0f,
+				1.0f
+		);
 	}
 	
 	@Override
