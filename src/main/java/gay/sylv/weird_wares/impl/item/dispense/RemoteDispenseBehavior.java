@@ -31,7 +31,7 @@ public class RemoteDispenseBehavior extends DefaultDispenseItemBehavior {
 				null,
 				blockSource.pos(),
 				SoundEvents.SCULK_CLICKING,
-				SoundSource.PLAYERS,
+				SoundSource.BLOCKS,
 				1.0f,
 				1.0f
 		);
