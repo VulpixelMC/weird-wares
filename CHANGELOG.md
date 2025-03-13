@@ -1,10 +1,12 @@
-# Hotfixes (`0.1.2+1.21`)
+# Weird Wares `0.1.3+1.21`
 ## Added
- - Zombified Piglins have a 10% chance of spawning left-handed.
-## Fixes
- - Nether Spire structures now spawn correctly (caused by incorrect file path).
- - Zombified Piglins now hold Golden Swords.
+- Sodium 0.6 support
 
-# JDK Incompatibility Hotfix (`0.1.1+1.21`)
+## Removed
+- Sodium 0.5 support
+
+## Changed
+- Chunk distance that block glint renders at has been clamped at 8 chunks for performance reasons.
+
 ## Fixes
- - Disabled JDK preview features which caused issues with production JVMs.
+- `1.21.1` is now marked as a supported Minecraft version.
