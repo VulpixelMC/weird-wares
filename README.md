@@ -22,7 +22,7 @@ There are a few unobtainable blocks that Weird Wares adds to the Creative menu. 
 <sub>Credit to the Minecraft Wiki for renders of <a href="https://minecraft.wiki/w/File:Missing_Tile_BE3.png">unknown.png</a> and <a href="https://minecraft.wiki/w/File:Missing_Tile_BE1.png">info_update.png</a>.</sub>
 
 ## Sculk Remote
-When used, the Sculk Remote can remotely interact with a block. When sneaking and used, the Sculk Remote sets its target position and dimension to the target block.
+When used, the Sculk Remote can remotely interact with a block. When sneaking and used, the Sculk Remote sets its target position and dimension to the target block. When dispensed in a dispenser block, the Sculk Remote remotely interacts with its target block, effectively enabling remote redstone.
 ![The metadata tooltip of a Sculk Remote](sculk_remote.png)
 ![The lever is off before using a Sculk Remote bound to the Lever](use_sculk_remote_0.png)
 ![The lever is now on after using a Sculk Remote bound to the Lever](use_sculk_remote_1.png)
