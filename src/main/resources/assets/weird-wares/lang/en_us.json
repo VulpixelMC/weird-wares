@@ -1,5 +1,6 @@
 {
 	"item.weird-wares.glitter": "Glitter",
+	"item.weird-wares.sculk_remote": "Sculk Remote",
 	"block.weird-wares.unknown": "Unknown",
 	"block.weird-wares.info_update": "tile.info_update.name",
 	"block.weird-wares.info_update2": "tile.info_update.name",
@@ -9,6 +10,8 @@
 	"block.weird-wares.nether_reactor.used": "Used Nether Reactor Core",
 	"lore.weird-wares.item.glitter": "Give your items some glint by putting glitter on them.",
 	"lore.weird-wares.block.nether_reactor": "A blast from the past!",
+	"tooltip.weird-wares.item.sculk_remote.dimension": "Dimension: %1$s",
+	"tooltip.weird-wares.item.sculk_remote.position": "Position: %1$d %2$d %3$d",
 	"creative_mode_tab.weird-wares.weird_wares": "Weird Wares",
 	"chat.weird-wares.nether_reactor.active": "Active!",
 	"chat.weird-wares.nether_reactor.incorrect_pattern": "Not the correct pattern!",

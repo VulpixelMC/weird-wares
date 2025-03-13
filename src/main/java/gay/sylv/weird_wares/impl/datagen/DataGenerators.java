@@ -12,8 +12,12 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.data.models.BlockModelGenerators;
+import net.minecraft.data.models.ItemModelGenerators;
+import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -28,6 +32,25 @@ public final class DataGenerators implements DataGeneratorEntrypoint {
 		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 		pack.addProvider(BlockLootTableGenerator::new);
 		pack.addProvider(RecipeGenerator::new);
+		pack.addProvider(ModelGenerator::new);
+	}
+	
+	private static final class ModelGenerator extends FabricModelProvider {
+		public ModelGenerator(FabricDataOutput output) {
+			super(output);
+		}
+		
+		@Override
+		public void generateBlockStateModels(BlockModelGenerators generators) {
+		}
+		
+		@Override
+		public void generateItemModels(ItemModelGenerators generators) {
+			generators.generateFlatItem(
+					gay.sylv.weird_wares.impl.item.Items.SCULK_REMOTE,
+					ModelTemplates.FLAT_HANDHELD_ITEM
+			);
+		}
 	}
 	
 	private static final class BlockLootTableGenerator extends FabricBlockLootTableProvider {

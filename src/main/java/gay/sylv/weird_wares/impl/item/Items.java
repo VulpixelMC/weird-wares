@@ -19,6 +19,7 @@ public final class Items implements Initializable {
 	public static final Items INSTANCE = new Items();
 	
 	public static Item GLITTER;
+	public static Item SCULK_REMOTE;
 	
 	private Items() {}
 	
@@ -29,6 +30,14 @@ public final class Items implements Initializable {
 				new GlitterItem(
 						new Item.Properties()
 								.stacksTo(99)
+				)
+		);
+		
+		SCULK_REMOTE = register(
+				"sculk_remote",
+				new SculkRemoteItem(
+						new Item.Properties()
+								.stacksTo(1)
 				)
 		);
 	}

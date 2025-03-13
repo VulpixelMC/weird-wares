@@ -42,6 +42,7 @@ public final class Main implements ModInitializer {
 	public void onInitialize() {
 		Networking.INSTANCE.initialize();
 		DataAttachments.INSTANCE.initialize();
+		gay.sylv.weird_wares.impl.item.component.DataComponents.INSTANCE.initialize();
 		Entities.INSTANCE.initialize();
 		Items.INSTANCE.initialize();
 		Blocks.INSTANCE.initialize();
