@@ -8,6 +8,7 @@
 package gay.sylv.weird_wares.impl.item;
 
 import gay.sylv.weird_wares.impl.item.component.DataComponents;
+import gay.sylv.weird_wares.impl.item.component.RemoteSet;
 import gay.sylv.weird_wares.impl.item.component.RemoteTarget;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.ChatFormatting;
@@ -31,6 +32,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 @org.jetbrains.annotations.ApiStatus.Internal
 public class SculkRemoteItem extends Item {
@@ -67,8 +69,18 @@ public class SculkRemoteItem extends Item {
 		
 		if (!level.isClientSide() && player != null && player.isShiftKeyDown() && !context.isInside()) {
 			context.getItemInHand().set(
+					DataComponents.REMOTE_SET,
+					RemoteSet.TRUE
+			);
+			
+			RemoteTarget remoteTarget = new RemoteTarget(level.dimension(), context.getClickedPos());
+			if (Objects.equals(context.getItemInHand().get(DataComponents.REMOTE_TARGET), remoteTarget)) {
+				return InteractionResult.FAIL;
+			}
+			
+			context.getItemInHand().set(
 					DataComponents.REMOTE_TARGET,
-					new RemoteTarget(level.dimension(), context.getClickedPos())
+					remoteTarget
 			);
 			level.playSound(
 					null,
@@ -78,6 +90,8 @@ public class SculkRemoteItem extends Item {
 					1.0f,
 					1.0f
 			);
+			
+			return InteractionResult.CONSUME;
 		}
 		
 		return super.useOn(context);
@@ -86,7 +100,11 @@ public class SculkRemoteItem extends Item {
 	@Override
 	public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
 		ItemStack stack = player.getItemInHand(usedHand);
-		if (!level.isClientSide() && stack.has(DataComponents.REMOTE_TARGET)) {
+		if (
+				!level.isClientSide() &&
+				!stack.getOrDefault(DataComponents.REMOTE_SET, RemoteSet.FALSE).isSet() &&
+				stack.has(DataComponents.REMOTE_TARGET)
+		) {
 			RemoteTarget remoteTarget = stack.get(DataComponents.REMOTE_TARGET);
 			assert remoteTarget != null;
 			assert level.getServer() != null;
@@ -126,6 +144,8 @@ public class SculkRemoteItem extends Item {
 				);
 			}
 		}
+		
+		stack.remove(DataComponents.REMOTE_SET);
 		
 		return super.use(level, player, usedHand);
 	}
