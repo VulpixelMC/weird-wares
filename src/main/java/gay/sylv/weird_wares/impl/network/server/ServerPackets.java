@@ -23,12 +23,26 @@ public final class ServerPackets implements Initializable {
 	
 	@Override
 	public void initialize() {
-		ServerPlayNetworking.registerGlobalReceiver(RequestGlintSyncPayload.TYPE, (payload, context) -> {
-			//noinspection resource
-			DataAttachments
-					.getGlintOptional(context.player().level().getChunk(payload.chunkPos().x, payload.chunkPos().z))
-					.filter(glints -> !glints.isEmpty())
-					.ifPresent(glints -> ServerPlayNetworking.send(context.player(), new SyncGlintPayload(payload.chunkPos(), glints)));
-		});
+		ServerPlayNetworking.registerGlobalReceiver(
+				RequestGlintSyncPayload.TYPE,
+				(payload, context) -> DataAttachments
+						.getGlintOptional(
+								context
+										.player()
+										.level()
+										.getChunk(
+												payload.chunkPos().x,
+												payload.chunkPos().z
+										)
+						)
+						.filter(glints -> !glints.isEmpty())
+						.ifPresent(
+								glints -> ServerPlayNetworking
+										.send(
+												context.player(),
+												new SyncGlintPayload(payload.chunkPos(), glints)
+										)
+						)
+		);
 	}
 }
