@@ -65,7 +65,7 @@ public class SculkRemoteItem extends Item {
 		Level level = context.getLevel();
 		Player player = context.getPlayer();
 		
-		if (!level.isClientSide() && player != null && player.isShiftKeyDown()) {
+		if (!level.isClientSide() && player != null && player.isShiftKeyDown() && !context.isInside()) {
 			context.getItemInHand().set(
 					DataComponents.REMOTE_TARGET,
 					new RemoteTarget(level.dimension(), context.getClickedPos())
@@ -86,7 +86,7 @@ public class SculkRemoteItem extends Item {
 	@Override
 	public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
 		ItemStack stack = player.getItemInHand(usedHand);
-		if (!level.isClientSide() && !player.isShiftKeyDown() && stack.has(DataComponents.REMOTE_TARGET)) {
+		if (!level.isClientSide() && stack.has(DataComponents.REMOTE_TARGET)) {
 			RemoteTarget remoteTarget = stack.get(DataComponents.REMOTE_TARGET);
 			assert remoteTarget != null;
 			assert level.getServer() != null;
