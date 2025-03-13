@@ -2,6 +2,7 @@ package gay.sylv.weird_wares.impl.item;
 
 import gay.sylv.weird_wares.impl.item.component.DataComponents;
 import gay.sylv.weird_wares.impl.item.component.RemoteTarget;
+import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -19,6 +20,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -94,14 +96,28 @@ public class SculkRemoteItem extends Item {
 							true
 					)
 			);
-			level.playSound(
-					null,
-					player,
-					SoundEvents.SCULK_CLICKING,
-					SoundSource.PLAYERS,
-					1.0f,
-					1.0f
-			);
+			if (!player.getUUID().equals(FakePlayer.DEFAULT_UUID)) {
+				level.playSound(
+						null,
+						player,
+						SoundEvents.SCULK_CLICKING,
+						SoundSource.PLAYERS,
+						1.0f,
+						1.0f
+				);
+			} else {
+				Vec3 position = player.position();
+				level.playSound(
+						null,
+						position.x,
+						position.y,
+						position.z,
+						SoundEvents.SCULK_CLICKING,
+						SoundSource.BLOCKS,
+						1.0f,
+						1.0f
+				);
+			}
 		}
 		
 		return super.use(level, player, usedHand);
