@@ -69,7 +69,6 @@ public class NetherReactorBlock extends BaseEntityBlock {
 	
 	private static final Component ACTIVE = Component.translatable("chat.weird-wares.nether_reactor.active");
 	private static final Component INCORRECT_PATTERN = Component.translatable("chat.weird-wares.nether_reactor.incorrect_pattern");
-	private static final Direction.Axis[] GOLD_AXES = new Direction.Axis[]{Direction.Axis.X, Direction.Axis.Z};
 	private static final Block MEAT = net.minecraft.world.level.block.Blocks.COBBLESTONE;
 	private static final Block GEM = net.minecraft.world.level.block.Blocks.GOLD_BLOCK;
 	private static final Block REACTING_WASTE = Blocks.GLOWING_OBSIDIAN.block();
