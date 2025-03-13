@@ -34,7 +34,6 @@ public final class Items implements Initializable {
 				new GlitterItem(
 						new Item.Properties()
 								.stacksTo(99)
-								.component(DataComponents.LORE, new ItemLore(List.of(Component.translatable("lore.weird-wares.item.glitter"))))
 				)
 		);
 	}
