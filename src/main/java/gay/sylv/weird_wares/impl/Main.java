@@ -11,6 +11,7 @@ import gay.sylv.weird_wares.impl.block.Blocks;
 import gay.sylv.weird_wares.impl.client.render.Rendering;
 import gay.sylv.weird_wares.impl.entity.Entities;
 import gay.sylv.weird_wares.impl.item.Items;
+import gay.sylv.weird_wares.impl.item.dispense.RemoteDispenseBehavior;
 import gay.sylv.weird_wares.impl.item.group.CreativeModeTabs;
 import gay.sylv.weird_wares.impl.network.Networking;
 import gay.sylv.weird_wares.impl.util.Constants;
@@ -25,6 +26,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
@@ -48,6 +50,8 @@ public final class Main implements ModInitializer {
 		Blocks.INSTANCE.initialize();
 		CreativeModeTabs.INSTANCE.initialize();
 		LootTables.INSTANCE.initialize();
+		
+		DispenserBlock.registerBehavior(Items.SCULK_REMOTE, new RemoteDispenseBehavior());
 		
 		UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
 			ItemStack itemStack = player.getItemInHand(hand);

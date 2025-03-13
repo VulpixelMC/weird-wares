@@ -94,6 +94,14 @@ public class SculkRemoteItem extends Item {
 							true
 					)
 			);
+			level.playSound(
+					null,
+					remoteTarget.pos(),
+					SoundEvents.SCULK_CLICKING,
+					SoundSource.PLAYERS,
+					1.0f,
+					1.0f
+			);
 		}
 		
 		return super.use(level, player, usedHand);
