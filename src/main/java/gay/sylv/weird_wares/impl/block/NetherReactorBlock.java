@@ -171,7 +171,7 @@ public class NetherReactorBlock extends BaseEntityBlock {
 			if (blockEntity.progress != Progress.END) {
 				blockEntity.progressTimer++;
 				
-				if (blockEntity.progressTimer % 8 == 0 && level instanceof ServerLevel serverLevel) {
+				if (blockEntity.progressTimer % 12 == 0 && level instanceof ServerLevel serverLevel) {
 					LootParams lootParams = new LootParams.Builder(serverLevel)
 							.create(LootContextParamSets.EMPTY);
 					LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(LootTables.NETHER_REACTION_BYPRODUCT);
@@ -281,7 +281,7 @@ public class NetherReactorBlock extends BaseEntityBlock {
 			if (level instanceof ServerLevel serverLevel) {
 				StructureTemplateManager structureManager = Objects.requireNonNull(level.getServer()).getStructureManager();
 				StructureTemplate structureTemplate = structureManager.get(modId("nether_reactor/empty_spire")).orElseThrow();
-				if (!structureTemplate.placeInWorld(serverLevel, pos.offset(-8, -1, -8), BlockPos.ZERO, new StructurePlaceSettings(), serverLevel.random, DEFAULT)) {
+				if (!structureTemplate.placeInWorld(serverLevel, pos.offset(-8, -2, -8), BlockPos.ZERO, new StructurePlaceSettings(), serverLevel.random, DEFAULT)) {
 					Main.LOGGER.error("Failed to place empty nether spire!");
 				}
 			}
@@ -336,16 +336,16 @@ public class NetherReactorBlock extends BaseEntityBlock {
 	
 	public enum Progress implements StringRepresentable {
 		INITIAL(20),
-		BEGIN1(20),
-		BEGIN2(20),
-		BEGIN3(20),
-		MID1(225),
-		MID2(225),
-		MID3(225),
-		MID4(225),
-		FINISH1(20),
-		FINISH2(20),
-		FINISH3(20),
+		BEGIN1(30),
+		BEGIN2(30),
+		BEGIN3(30),
+		MID1(113),
+		MID2(113),
+		MID3(113),
+		MID4(113),
+		FINISH1(30),
+		FINISH2(30),
+		FINISH3(30),
 		END(0);
 		
 		private final int lifetime;
