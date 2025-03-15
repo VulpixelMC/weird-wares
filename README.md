@@ -1,5 +1,6 @@
 # Weird Wares
-Weird wares for your wacky world! This mod adds various unobtainable and forgotten items, blocks, and features *plus a few extras*.
+Weird wares for your wacky world! This mod adds various unobtainable and forgotten items, blocks, and features *plus a few extras*.<br>
+[![Showcased at BlanketCon '25](https://raw.githubusercontent.com/worldwidepixel/badges/refs/heads/main/bc25/featured_in/cozy.svg)](https://modfest.net/bc25)
 
 ## Glitter
 **Fair warning**: Excessive use of glitter may result in frame drops.
