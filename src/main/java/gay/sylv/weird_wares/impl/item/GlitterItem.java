@@ -9,10 +9,15 @@ package gay.sylv.weird_wares.impl.item;
 
 import gay.sylv.weird_wares.impl.DataAttachments;
 import gay.sylv.weird_wares.impl.client.render.Rendering;
+import gay.sylv.weird_wares.impl.network.server.AddGlintPayload;
+import gay.sylv.weird_wares.impl.network.server.RemoveGlintPayload;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -23,6 +28,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,14 +79,65 @@ public class GlitterItem extends Item {
 			DataAttachments.setGlint(chunk, glints);
 			playSound(context.getLevel(), context.getPlayer());
 			
-			if (context.getLevel().isClientSide()) {
-				SectionPos sectionPos = SectionPos.of(clickedPos);
-				Rendering.markGlintDirty(sectionPos);
-			}
+			updateGlint(context, clickedPos);
 			
 			return InteractionResult.SUCCESS;
 		}
 		return super.useOn(context);
+	}
+	public static void updateGlint(UseOnContext context, BlockPos clickedPos) {
+		updateGlint(context, clickedPos, Set.of(clickedPos));
+	}
+	
+	public static void updateGlint(UseOnContext context, BlockPos clickedPos, Set<BlockPos> glints) {
+		if (context.getLevel().isClientSide()) {
+			SectionPos sectionPos = SectionPos.of(clickedPos);
+			Rendering.markGlintDirty(sectionPos);
+		} else {
+			Level level = context.getLevel();
+			Player player = context.getPlayer();
+			addGlint(clickedPos, (ServerLevel) level, player);
+		}
+	}
+	
+	public static void addGlint(BlockPos clickedPos, ServerLevel level, Player player) {
+		addGlint(clickedPos, level, player, Set.of(clickedPos));
+	}
+	
+	public static void addGlint(BlockPos clickedPos, ServerLevel level, Player player, Set<BlockPos> glints) {
+		PlayerLookup.tracking(level, clickedPos)
+				.forEach(foundPlayer -> {
+							if (foundPlayer != player) {
+								ServerPlayNetworking.send(
+										foundPlayer,
+										new AddGlintPayload(
+												new ChunkPos(clickedPos),
+												glints
+										)
+								);
+							}
+						}
+				);
+	}
+	
+	public static void removeGlint(BlockPos clickedPos, ServerLevel level, Player player) {
+		removeGlint(clickedPos, level, player, Set.of(clickedPos));
+	}
+	
+	public static void removeGlint(BlockPos clickedPos, ServerLevel level, Player player, Set<BlockPos> glints) {
+		PlayerLookup.tracking(level, clickedPos)
+				.forEach(foundPlayer -> {
+							if (foundPlayer != player) {
+								ServerPlayNetworking.send(
+										foundPlayer,
+										new RemoveGlintPayload(
+												new ChunkPos(clickedPos),
+												glints
+										)
+								);
+							}
+						}
+				);
 	}
 	
 	private void playSound(Level level, Player player) {

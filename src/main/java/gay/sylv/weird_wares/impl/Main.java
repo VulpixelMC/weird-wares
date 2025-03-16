@@ -8,8 +8,8 @@
 package gay.sylv.weird_wares.impl;
 
 import gay.sylv.weird_wares.impl.block.Blocks;
-import gay.sylv.weird_wares.impl.client.render.Rendering;
 import gay.sylv.weird_wares.impl.entity.Entities;
+import gay.sylv.weird_wares.impl.item.GlitterItem;
 import gay.sylv.weird_wares.impl.item.Items;
 import gay.sylv.weird_wares.impl.item.dispense.RemoteDispenseBehavior;
 import gay.sylv.weird_wares.impl.item.group.CreativeModeTabs;
@@ -19,8 +19,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
@@ -66,21 +66,22 @@ public final class Main implements ModInitializer {
 				enchantedBlocks.add(clickedPos);
 				DataAttachments.setGlint(chunk, enchantedBlocks);
 				
-				if (context.getLevel().isClientSide()) {
-					SectionPos sectionPos = SectionPos.of(clickedPos);
-					Rendering.markGlintDirty(sectionPos);
-				}
+				GlitterItem.updateGlint(context, clickedPos);
 			}
 			return InteractionResult.PASS;
 		});
 		
-		PlayerBlockBreakEvents.AFTER.register((level, player, pos, blockState, blockEntity) -> {
-			ChunkAccess chunk = level.getChunk(pos);
-			Set<BlockPos> glints = new HashSet<>(DataAttachments.getGlint(chunk));
-			if (glints.contains(pos)) {
-				glints.remove(pos);
-				DataAttachments.setGlint(chunk, glints);
-			}
-		});
+		PlayerBlockBreakEvents.AFTER.register(
+				(level, player, pos, blockState, blockEntity) -> {
+					ChunkAccess chunkAccess = level.getChunk(pos);
+					Set<BlockPos> glints = new HashSet<>(DataAttachments.getGlint(chunkAccess));
+					if (glints.contains(pos)) {
+						glints.remove(pos);
+						DataAttachments.setGlint(chunkAccess, glints);
+						GlitterItem.removeGlint(pos, (ServerLevel) level, player);
+					}
+				}
+		);
 	}
+	
 }

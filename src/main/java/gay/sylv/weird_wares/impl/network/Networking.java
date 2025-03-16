@@ -8,6 +8,8 @@
 package gay.sylv.weird_wares.impl.network;
 
 import gay.sylv.weird_wares.impl.network.client.RequestGlintSyncPayload;
+import gay.sylv.weird_wares.impl.network.server.AddGlintPayload;
+import gay.sylv.weird_wares.impl.network.server.RemoveGlintPayload;
 import gay.sylv.weird_wares.impl.network.server.ServerPackets;
 import gay.sylv.weird_wares.impl.network.server.SyncGlintPayload;
 import gay.sylv.weird_wares.impl.util.Initializable;
@@ -31,6 +33,8 @@ public final class Networking implements Initializable {
 	@Override
 	public void initialize() {
 		s2c(SyncGlintPayload.TYPE, SyncGlintPayload.CODEC);
+		s2c(AddGlintPayload.TYPE, AddGlintPayload.CODEC);
+		s2c(RemoveGlintPayload.TYPE, RemoveGlintPayload.CODEC);
 		c2s(RequestGlintSyncPayload.TYPE, RequestGlintSyncPayload.CODEC);
 		
 		ServerPackets.INSTANCE.initialize();
