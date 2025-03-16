@@ -96,7 +96,7 @@ public class GlitterItem extends Item {
 		} else {
 			Level level = context.getLevel();
 			Player player = context.getPlayer();
-			addGlint(clickedPos, (ServerLevel) level, player);
+			addGlint(clickedPos, (ServerLevel) level, player, glints);
 		}
 	}
 	
