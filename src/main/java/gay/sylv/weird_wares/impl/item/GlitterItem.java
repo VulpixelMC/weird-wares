@@ -15,9 +15,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
@@ -83,13 +81,6 @@ public class GlitterItem extends Item {
 			return InteractionResult.SUCCESS;
 		}
 		return super.useOn(context);
-	}
-	
-	@Override
-	public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-		InteractionResultHolder<ItemStack> ret = super.use(level, player, usedHand);
-		playSound(level, player);
-		return ret;
 	}
 	
 	private void playSound(Level level, Player player) {
