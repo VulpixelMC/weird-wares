@@ -1,4 +1,6 @@
-# Weird Wares `0.2.2+1.21`
+# Weird Wares `0.3.0+1.21`
+## Changed
+- Disable glint rendering & remove from creative tab.
+
 ## Fixed
-- Don't play glitter sound when not used on a block.
-- Update glint across the network correctly.
+- Sculk remotes interact in the direction of the dispensing dispenser.
