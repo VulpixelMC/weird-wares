@@ -39,7 +39,6 @@ public final class CreativeModeTabs implements Initializable {
 			creativeModeTab.accept(Blocks.INFO_UPDATE2.item());
 			creativeModeTab.accept(Blocks.GLOWING_OBSIDIAN.item());
 			creativeModeTab.accept(Blocks.NETHER_REACTOR.item());
-			creativeModeTab.accept(Items.GLITTER);
 			creativeModeTab.accept(Items.SCULK_REMOTE);
 		});
 	}

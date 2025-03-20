@@ -30,7 +30,6 @@ public final class MainClient implements ClientModInitializer {
 	
 	@Override
 	public void onInitializeClient() {
-		Rendering.INSTANCE.initialize();
 		ClientPackets.INSTANCE.initialize();
 		
 		ClientChunkEvents.CHUNK_LOAD.register((clientLevel, chunk) -> ClientPlayNetworking.send(new RequestGlintSyncPayload(chunk.getPos())));
