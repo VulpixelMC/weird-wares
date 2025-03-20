@@ -121,6 +121,7 @@ public class SculkRemoteItem extends Item {
 			assert level.getServer() != null;
 			Level remoteLevel = level.getServer().getLevel(remoteTarget.dimension());
 			assert remoteLevel != null;
+			boolean shiftKeyDown = player.isShiftKeyDown();
 			if (stack.has(DataComponents.REMOTE_STATE) && player instanceof FakePlayer) {
 				if (Objects.requireNonNull(stack.get(DataComponents.REMOTE_STATE)).states().contains(RemoteState.Type.SHIFT)) {
 					player.setShiftKeyDown(true);
@@ -138,6 +139,9 @@ public class SculkRemoteItem extends Item {
 							true
 					)
 			);
+			if (!shiftKeyDown) {
+				player.setShiftKeyDown(false);
+			}
 			if (!player.getUUID().equals(FakePlayer.DEFAULT_UUID)) {
 				level.playSound(
 						null,
