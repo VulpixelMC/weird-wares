@@ -14,6 +14,7 @@ import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.DispenserBlock;
 import org.jetbrains.annotations.NotNull;
 
 @org.jetbrains.annotations.ApiStatus.Internal
@@ -23,6 +24,7 @@ public class RemoteDispenseBehavior extends DefaultDispenseItemBehavior {
 		Player player = FakePlayer.get(blockSource.level());
 		player.setItemInHand(InteractionHand.MAIN_HAND, stack);
 		player.setPos(blockSource.center());
+		player.setYRot(blockSource.state().getValue(DispenserBlock.FACING).toYRot());
 		return stack.use(blockSource.level(), player, InteractionHand.MAIN_HAND).getObject();
 	}
 	
