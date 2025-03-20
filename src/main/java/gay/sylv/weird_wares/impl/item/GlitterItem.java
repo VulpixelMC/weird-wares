@@ -32,7 +32,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,11 +57,7 @@ public class GlitterItem extends Item {
 		if (slot.hasItem() && !slot.getItem().is(Items.GLITTER) && !slot.getItem().has(DataComponents.ENCHANTMENT_GLINT_OVERRIDE)) {
 			slot.getItem().set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
 			stack.shrink(1);
-			try (Level level = player.level()) {
-				playSound(level, player);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+			playSound(player.level(), player);
 			return true;
 		}
 		

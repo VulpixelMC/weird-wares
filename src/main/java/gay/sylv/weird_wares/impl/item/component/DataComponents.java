@@ -22,6 +22,7 @@ public class DataComponents implements Initializable {
 	
 	public static DataComponentType<RemoteTarget> REMOTE_TARGET;
 	public static DataComponentType<RemoteSet> REMOTE_SET;
+	public static DataComponentType<RemoteState> REMOTE_STATE;
 	
 	@Override
 	public void initialize() {
@@ -35,6 +36,12 @@ public class DataComponents implements Initializable {
 				"remote_set",
 				builder -> builder
 						.persistent(RemoteSet.CODEC)
+		);
+		REMOTE_STATE = register(
+				"remote_state",
+				builder -> builder
+						.persistent(RemoteState.CODEC)
+						.networkSynchronized(RemoteState.STREAM_CODEC)
 		);
 	}
 	

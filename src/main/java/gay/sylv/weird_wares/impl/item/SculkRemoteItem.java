@@ -9,6 +9,7 @@ package gay.sylv.weird_wares.impl.item;
 
 import gay.sylv.weird_wares.impl.item.component.DataComponents;
 import gay.sylv.weird_wares.impl.item.component.RemoteSet;
+import gay.sylv.weird_wares.impl.item.component.RemoteState;
 import gay.sylv.weird_wares.impl.item.component.RemoteTarget;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.ChatFormatting;
@@ -20,6 +21,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -31,8 +33,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @org.jetbrains.annotations.ApiStatus.Internal
 public class SculkRemoteItem extends Item {
@@ -59,6 +60,16 @@ public class SculkRemoteItem extends Item {
 							remoteTarget.pos().getZ()
 					).withStyle(ChatFormatting.DARK_GRAY)
 			);
+		}
+		
+		if (stack.has(DataComponents.REMOTE_STATE)) {
+			if (Objects.requireNonNull(stack.get(DataComponents.REMOTE_STATE)).states().contains(RemoteState.Type.SHIFT)) {
+				tooltipComponents.add(
+						Component.translatable(
+								"tooltip.weird-wares.item.sculk_remote.remote_state.shift"
+						).withStyle(ChatFormatting.DARK_GRAY)
+				);
+			}
 		}
 	}
 	
@@ -110,6 +121,12 @@ public class SculkRemoteItem extends Item {
 			assert level.getServer() != null;
 			Level remoteLevel = level.getServer().getLevel(remoteTarget.dimension());
 			assert remoteLevel != null;
+			if (stack.has(DataComponents.REMOTE_STATE) && player instanceof FakePlayer) {
+				if (Objects.requireNonNull(stack.get(DataComponents.REMOTE_STATE)).states().contains(RemoteState.Type.SHIFT)) {
+					player.setShiftKeyDown(true);
+				}
+			}
+			
 			this.useBlock(
 					remoteTarget.pos(),
 					player,
@@ -148,6 +165,56 @@ public class SculkRemoteItem extends Item {
 		stack.remove(DataComponents.REMOTE_SET);
 		
 		return super.use(level, player, usedHand);
+	}
+	
+	@Override
+	public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player) {
+		ItemStack itemInHand = player.getItemInHand(InteractionHand.MAIN_HAND);
+		if (itemInHand.is(Items.SCULK_REMOTE)) {
+			float pitch;
+			if (player.isShiftKeyDown()) {
+				pitch = getPitchForStateChange(itemInHand, RemoteState.Type.SHIFT);
+			} else {
+				pitch = 0.0f;
+			}
+			
+			if (pitch == 0.0f) {
+				return false;
+			}
+			
+			level.playSound(
+					null,
+					player,
+					SoundEvents.UI_BUTTON_CLICK.value(),
+					SoundSource.PLAYERS,
+					1.0f,
+					pitch
+			);
+		}
+		
+		return false;
+	}
+	
+	private static float getPitchForStateChange(ItemStack itemInHand, RemoteState.Type state) {
+		float pitch;
+		if (!itemInHand.has(DataComponents.REMOTE_STATE) || (itemInHand.has(DataComponents.REMOTE_STATE) && !Objects.requireNonNull(itemInHand.get(DataComponents.REMOTE_STATE)).states().contains(state))) {
+			pitch = 2.0f;
+			itemInHand.set(
+					DataComponents.REMOTE_STATE,
+					new RemoteState(new HashSet<>(Collections.singleton(state)))
+			);
+		} else if (itemInHand.has(DataComponents.REMOTE_STATE) && Objects.requireNonNull(itemInHand.get(DataComponents.REMOTE_STATE)).states().contains(state)) {
+			pitch = 1.75f;
+			Objects.requireNonNull(itemInHand.get(DataComponents.REMOTE_STATE)).states().remove(state);
+		} else {
+			pitch = 0.0f;
+		}
+		return pitch;
+	}
+	
+	@Override
+	public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
+		return false;
 	}
 	
 	public void useBlock(BlockPos pos, Player player, Level level, BlockHitResult result) {

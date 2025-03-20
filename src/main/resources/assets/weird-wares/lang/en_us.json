@@ -12,6 +12,7 @@
 	"lore.weird-wares.block.nether_reactor": "A blast from the past!",
 	"tooltip.weird-wares.item.sculk_remote.dimension": "Dimension: %1$s",
 	"tooltip.weird-wares.item.sculk_remote.position": "Position: %1$d %2$d %3$d",
+	"tooltip.weird-wares.item.sculk_remote.remote_state.shift": "State: Shift",
 	"creative_mode_tab.weird-wares.weird_wares": "Weird Wares",
 	"chat.weird-wares.nether_reactor.active": "Active!",
 	"chat.weird-wares.nether_reactor.incorrect_pattern": "Not the correct pattern!",
