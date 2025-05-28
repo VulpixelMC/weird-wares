@@ -84,4 +84,7 @@ public final class Main implements ModInitializer {
 		);
 	}
 	
+	public static Logger getLogger(String ...subsystem) {
+		return LoggerFactory.getLogger(Constants.MOD_NAME + "/" + String.join("/", subsystem));
+	}
 }

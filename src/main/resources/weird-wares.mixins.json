@@ -7,7 +7,9 @@
 	],
 	"client": [
 		"client.Mixin_BufferBuilder",
-		"client.Mixin_LevelRenderer"
+		"client.Mixin_LevelRenderer",
+		"client.sodium.Mixin_SodiumWorldRenderer",
+		"client.sodium.Accessor_RenderSectionManager"
 	],
 	"injectors": {
 		"defaultRequire": 1

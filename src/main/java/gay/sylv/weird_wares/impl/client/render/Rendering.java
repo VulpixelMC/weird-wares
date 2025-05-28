@@ -7,58 +7,99 @@
  */
 package gay.sylv.weird_wares.impl.client.render;
 
-import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import gay.sylv.weird_wares.impl.DataAttachments;
-import gay.sylv.weird_wares.impl.compat.client.SodiumCompatibility;
-import gay.sylv.weird_wares.impl.duck.Accessor_BufferBuilder;
+import gay.sylv.weird_wares.impl.Main;
+import gay.sylv.weird_wares.impl.util.Constants;
 import gay.sylv.weird_wares.impl.util.Initializable;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import net.caffeinemc.mods.sodium.client.render.chunk.ChunkRenderMatrices;
+import net.caffeinemc.mods.sodium.client.render.chunk.RenderSection;
+import net.caffeinemc.mods.sodium.client.render.chunk.lists.ChunkRenderList;
+import net.caffeinemc.mods.sodium.client.render.chunk.lists.SortedRenderLists;
+import net.caffeinemc.mods.sodium.client.render.chunk.region.RenderRegion;
+import net.caffeinemc.mods.sodium.client.util.iterator.ByteIterator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.SectionPos;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceProvider;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL40C;
+import org.lwjgl.opengl.GLCapabilities;
+import org.slf4j.Logger;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
+import java.util.Iterator;
 
 @Environment(EnvType.CLIENT)
 @org.jetbrains.annotations.ApiStatus.Internal
 public final class Rendering implements Initializable {
+	public static final Logger LOGGER = Main.getLogger("Rendering");
 	public static final Rendering INSTANCE = new Rendering();
-	public static final Direction[] DIRECTIONS = Direction.values();
 	public static final Object2ObjectMap<SectionPos, BufferBuilder> glintBufferBuilder = new Object2ObjectArrayMap<>();
-	public static final Object2ObjectMap<SectionPos, VertexBuffer> glintVertexBuffer = new Object2ObjectArrayMap<>();
 	
-	private static final RandomSource RANDOM = RandomSource.create();
-	private static final float Z_FIGHT_SCALE = 0.015f;
-	private static final float Z_FIGHT_SCALE_Y = 0.02f;
+	public static ShaderProgram TERRAIN_GLINT_SHADER;
+	public static boolean gl33Ext;
+	public static boolean gl40Ext;
+	public static boolean gl43Ext;
+	public static boolean gl40;
+	public static boolean gl43;
 	
-	public static VertexFormat GLINT_FORMAT;
-	public static VertexFormat.Mode GLINT_MODE;
-	public static RenderType TERRAIN_GLINT;
+	private static int vao;
+	private static int vbo;
+	private static final float[] CUBE_VERTICES = {
+			1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+			1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
+			1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
+			0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+			0.0f,  1.0f, 0.0f,  0.0f, 1.0f,
+			
+			0.0f, 0.0f,  1.0f,  0.0f, 0.0f,
+			1.0f, 0.0f,  1.0f,  1.0f, 0.0f,
+			1.0f,  1.0f,  1.0f,  1.0f, 1.0f,
+			1.0f,  1.0f,  1.0f,  1.0f, 1.0f,
+			0.0f,  1.0f,  1.0f,  0.0f, 1.0f,
+			0.0f, 0.0f,  1.0f,  0.0f, 0.0f,
+			
+			0.0f,  1.0f,  1.0f,  1.0f, 0.0f,
+			0.0f,  1.0f, 0.0f,  1.0f, 1.0f,
+			0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+			0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+			0.0f, 0.0f,  1.0f,  0.0f, 0.0f,
+			0.0f,  1.0f,  1.0f,  1.0f, 0.0f,
+			
+			1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
+			1.0f,  1.0f,  1.0f,  1.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+			1.0f,  1.0f,  1.0f,  1.0f, 0.0f,
+			1.0f, 0.0f,  1.0f,  0.0f, 0.0f,
+			
+			0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+			1.0f, 0.0f,  1.0f,  1.0f, 0.0f,
+			1.0f, 0.0f,  1.0f,  1.0f, 0.0f,
+			0.0f, 0.0f,  1.0f,  0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+			
+			1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
+			0.0f,  1.0f, 0.0f,  0.0f, 1.0f,
+			1.0f,  1.0f,  1.0f,  1.0f, 0.0f,
+			1.0f,  1.0f,  1.0f,  1.0f, 0.0f,
+			0.0f,  1.0f, 0.0f,  0.0f, 1.0f,
+			0.0f,  1.0f,  1.0f,  0.0f, 0.0f,
+	};
 	
 	private Rendering() {}
 	
@@ -69,160 +110,128 @@ public final class Rendering implements Initializable {
 	@Override
 	public void initialize() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(minecraft -> {
-			TERRAIN_GLINT = RenderType.create(
-					"terrain_glint",
-					DefaultVertexFormat.POSITION_TEX,
-					VertexFormat.Mode.QUADS,
-					1536,
-					RenderType.CompositeState.builder()
-							.setShaderState(new RenderStateShard.ShaderStateShard(() -> {
-								try {
-									return new ShaderInstance(minecraft.getResourceManager(), "rendertype_terrain_glint", DefaultVertexFormat.POSITION_TEX);
-								} catch (IOException e) {
-									throw new RuntimeException(e);
-								}
-							}))
-							.setTextureState(new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, true, false))
-							.setWriteMaskState(RenderType.COLOR_WRITE)
-							.setCullState(RenderType.CULL)
-							.setDepthTestState(RenderType.LEQUAL_DEPTH_TEST)
-							.setTransparencyState(RenderType.GLINT_TRANSPARENCY)
-							.setTexturingState(RenderType.GLINT_TEXTURING)
-							.setOutputState(RenderType.ITEM_ENTITY_TARGET)
-							.createCompositeState(false)
-			);
-			GLINT_FORMAT = TERRAIN_GLINT.format();
-			GLINT_MODE = TERRAIN_GLINT.mode();
-		});
-		ClientChunkEvents.CHUNK_UNLOAD.register((clientLevel, chunk) -> {
-			var glint = DataAttachments.getGlint(chunk);
-			glint.forEach(pos -> {
-				SectionPos sectionPos = SectionPos.of(pos);
-				glintBufferBuilder.remove(sectionPos);
-				VertexBuffer vertexBuffer = glintVertexBuffer.remove(sectionPos);
-				if (vertexBuffer != null) {
-					vertexBuffer.close();
-				}
-			});
-		});
-		WorldRenderEvents.BEFORE_ENTITIES.register(context -> {
-			BlockModelShaper blockModelShaper = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper();
-			SodiumCompatibility.getRenderedSections(context.worldRenderer()).forEach(sectionPos -> {
-				BufferBuilder bufferBuilder;
-				Set<BlockPos> glint;
-				try (ClientLevel level = context.world()) {
-					var glintOptional = DataAttachments.getGlintOptional(level.getChunkAt(sectionPos.origin()));
-					if (glintOptional.isPresent()) {
-						glint = glintOptional.get();
-					} else return;
-					if (glint.isEmpty() || glint.stream().noneMatch(x -> SectionPos.of(x).equals(sectionPos))) return;
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-				boolean hasBuilder = glintBufferBuilder.containsKey(sectionPos);
-				if (!hasBuilder) {
-					bufferBuilder = Tesselator.getInstance().begin(GLINT_MODE, GLINT_FORMAT);
-					glintBufferBuilder.put(sectionPos, bufferBuilder);
-				} else {
-					bufferBuilder = glintBufferBuilder.get(sectionPos);
-				}
-				
-				// rebuild if dirty
-				if (!hasBuilder) {
-					PoseStack poseStack = new PoseStack();
-					try (ClientLevel level = context.world()) {
-						glint
-								.forEach(pos -> {
-									BlockState state = level.getBlockState(pos);
-									BakedModel model = blockModelShaper.getBlockModel(state);
-									
-									poseStack.pushPose();
-									poseStack.translate(SectionPos.sectionRelative(pos.getX()), SectionPos.sectionRelative(pos.getY()), SectionPos.sectionRelative(pos.getZ()));
-									translateAndScale(poseStack);
-									
-									if (!state.getShape(level, pos).isEmpty() && state.getShape(level, pos).bounds().maxY <= 0.5f) {
-										poseStack.translate(0.0f, Z_FIGHT_SCALE_Y, 0.0f);
-									}
-									
-									// directional faces
-									BlockPos.MutableBlockPos mutablePos = pos.mutable();
-									for (Direction direction : DIRECTIONS) {
-										if (Block.shouldRenderFace(state, level, pos, direction, mutablePos.setWithOffset(pos, direction))) {
-											List<BakedQuad> quads = model.getQuads(state, direction, RANDOM);
-											for (BakedQuad quad : quads) {
-												bufferBuilder.putBulkData(poseStack.last(), quad, 1.0f, 1.0f, 1.0f, 1.0f, LevelRenderer.getLightColor(context.world(), pos), OverlayTexture.NO_OVERLAY);
-											}
-										}
-									}
-									// non-directional faces
-									List<BakedQuad> quads = model.getQuads(state, null, RANDOM);
-									for (BakedQuad quad : quads) {
-										bufferBuilder.putBulkData(poseStack.last(), quad, 1.0f, 1.0f, 1.0f, 1.0f, LevelRenderer.getLightColor(context.world(), pos), OverlayTexture.NO_OVERLAY);
-									}
-									poseStack.popPose();
-								});
-						
-						if (((Accessor_BufferBuilder) bufferBuilder).weird_wares$isBuilding()) {
-							MeshData meshData = bufferBuilder.build();
-							if (meshData != null) {
-								VertexBuffer vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
-								vertexBuffer.bind();
-								vertexBuffer.upload(meshData);
-								VertexBuffer.unbind();
-								glintVertexBuffer.put(sectionPos, vertexBuffer);
-							} else {
-								VertexBuffer vertexBuffer = glintVertexBuffer.remove(sectionPos);
-								if (vertexBuffer != null) {
-									vertexBuffer.close();
-								}
-							}
-						}
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-				}
-				
-				VertexBuffer buffer = glintVertexBuffer.get(sectionPos);
-				if (buffer != null) {
-					TERRAIN_GLINT.setupRenderState();
-					ShaderInstance shaderInstance = RenderSystem.getShader();
-					assert shaderInstance != null;
-					
-					// set uniforms
-					Uniform chunkOffset = shaderInstance.CHUNK_OFFSET;
-					if (chunkOffset != null) {
-						BlockPos sectionOriginBlockPos = sectionPos.origin();
-						Vec3 sectionOrigin = new Vec3(sectionOriginBlockPos.getX(), sectionOriginBlockPos.getY(), sectionOriginBlockPos.getZ());
-						Vec3 cameraPos = context.camera().getPosition();
-						Vec3 pos = sectionOrigin.subtract(cameraPos);
-						chunkOffset.set((float) pos.x(), (float) pos.y(), (float) pos.z());
-					}
-					
-					// set required uniforms & bind shader
-					shaderInstance.setDefaultUniforms(GLINT_MODE, context.positionMatrix(), context.projectionMatrix(), Minecraft.getInstance().getWindow());
-					shaderInstance.apply();
-					if (chunkOffset != null) {
-						chunkOffset.upload();
-					}
-					
-					buffer.bind();
-					buffer.draw();
-					
-					if (chunkOffset != null) {
-						chunkOffset.set(0.0f, 0.0f, 0.0f);
-					}
-					
-					// clean up the hot mess we made on your screen
-					shaderInstance.clear();
-					VertexBuffer.unbind();
-					TERRAIN_GLINT.clearRenderState();
-				}
-			});
+			// Sanity check in case any children decide to run this on Pojav Launcher or a potato
+			GLCapabilities capabilities = GL.getCapabilities();
+			gl33Ext = capabilities.GL_ARB_texture_swizzle;
+			gl40Ext = gl33Ext && capabilities.GL_ARB_draw_indirect;
+			gl43Ext = capabilities.GL_ARB_shader_storage_buffer_object && capabilities.GL_ARB_base_instance;
+			gl40 = capabilities.OpenGL40 || gl40Ext;
+			gl43 = capabilities.OpenGL43 || gl43Ext;
+			
+			if (!gl40) {
+				LOGGER.warn("=================================================================================");
+				LOGGER.warn("You are using an unsupported version of OpenGL.");
+				LOGGER.warn("The minimum version of OpenGL supported by {} is 4.0!", Constants.MOD_NAME);
+				LOGGER.warn("Expect severe issues to arise.");
+				LOGGER.warn("If you use Pojav Launcher, you will get ZERO SUPPORT! POJAV LAUNCHER IS UNSUPPORTED!");
+				LOGGER.warn("=================================================================================");
+				return;
+			} else if (!gl43) {
+				LOGGER.warn("=================================================================================");
+				LOGGER.warn("You are using an old version of OpenGL less than 4.3.");
+				LOGGER.warn("Expect performance issues and graphical glitches.");
+				LOGGER.warn("If you use a Mac, this message can probably be ignored.");
+				LOGGER.warn("=================================================================================");
+			}
+			
+			ResourceProvider resourceProvider = minecraft.getResourceManager();
+			TERRAIN_GLINT_SHADER = new ShaderProgram("terrain_glint", ShaderType.FRAGMENT, ShaderType.VERTEX);
+			if (!TERRAIN_GLINT_SHADER.compile(resourceProvider)) {
+				return;
+			}
+			
+			// set samplers
+			TERRAIN_GLINT_SHADER.use();
+			TERRAIN_GLINT_SHADER.setInt("GlintTex", 0);
+			
+			vao = GL40C.glGenVertexArrays();
+			vbo = GL40C.glGenBuffers();
+			
+			GL40C.glBindVertexArray(vao);
+			GL40C.glBindBuffer(GL40C.GL_ARRAY_BUFFER, vbo);
+			GL40C.glBufferData(GL40C.GL_ARRAY_BUFFER, CUBE_VERTICES, GL40C.GL_STATIC_DRAW);
+			
+			// position
+			GL40C.glVertexAttribPointer(0, 3, GL40C.GL_FLOAT, false, 5 * 4, 0);
+			GL40C.glEnableVertexAttribArray(0);
+			// UV
+			GL40C.glVertexAttribPointer(1, 2, GL40C.GL_FLOAT, false, 5 * 4, 3 * 4);
+			GL40C.glEnableVertexAttribArray(1);
+			
+			GL40C.glBindVertexArray(0);
+			
+			// Increase depth buffer precision
+			GL40C.glDepthRange(0.0f, 0.01f);
 		});
 	}
 	
-	private static void translateAndScale(PoseStack poseStack) {
-		poseStack.translate(-Z_FIGHT_SCALE / 2.0f, -Z_FIGHT_SCALE_Y / 2.0f, -Z_FIGHT_SCALE / 2.0f);
-		poseStack.scale(Z_FIGHT_SCALE + 1.0f, Z_FIGHT_SCALE_Y + 1.0f, Z_FIGHT_SCALE + 1.0f);
+	public static void renderGlint(SortedRenderLists renderLists, ChunkRenderMatrices matrices, double x, double y, double z) {
+		if (!gl40 || !TERRAIN_GLINT_SHADER.isCompiled()) return;
+		
+		// todo: instanced rendering
+		// Batch all glints
+		// Render glints instanced
+		
+		Iterator<ChunkRenderList> iterator = renderLists.iterator();
+		
+		GL40C.glEnable(GL40C.GL_DEPTH_TEST);
+		GL40C.glDepthMask(false);
+		GL40C.glColorMask(true, true, true, true);
+		GL40C.glEnable(GL40C.GL_CULL_FACE);
+		GL40C.glDepthFunc(GL40C.GL_LEQUAL);
+		GL40C.glEnable(GL40C.GL_BLEND);
+		GL40C.glBlendFuncSeparate(GL40C.GL_SRC_ALPHA, GL40C.GL_ONE_MINUS_SRC_COLOR, GL40C.GL_ONE, GL40C.GL_ZERO);
+		
+		RenderSystem.activeTexture(GL40C.GL_TEXTURE0);
+		RenderSystem.bindTexture(getTextureId(ItemRenderer.ENCHANTED_GLINT_ITEM));
+		
+		while (iterator.hasNext()) {
+			ChunkRenderList chunkRenderList = iterator.next();
+			RenderRegion region = chunkRenderList.getRegion();
+			ByteIterator sectionIndexIterator = chunkRenderList.sectionsWithGeometryIterator(false);
+			
+			if (sectionIndexIterator == null) return;
+			while (sectionIndexIterator.hasNext()) {
+				int sectionIndex = sectionIndexIterator.nextByteAsInt();
+				RenderSection section = region.getSection(sectionIndex);
+				int sectionX = section.getChunkX() * 16;
+				int sectionY = section.getChunkY() * 16;
+				int sectionZ = section.getChunkZ() * 16;
+				
+				TERRAIN_GLINT_SHADER.use();
+				TERRAIN_GLINT_SHADER.setMat4("ModelViewMat", matrices.modelView());
+				TERRAIN_GLINT_SHADER.setMat4("ProjMat", matrices.projection());
+				TERRAIN_GLINT_SHADER.setMat4("TextureMat", setupGlintTexturing(0.5f));
+				TERRAIN_GLINT_SHADER.setVec3("ChunkOffset", new Vector3f((float) ((double) sectionX - x), (float)  ((double) sectionY - y), (float) ((double) sectionZ - z)));
+				TERRAIN_GLINT_SHADER.setVec4("ColorModulator", new Vector4f(1.0f, 1.0f, 1.0f, 1.0f));
+				TERRAIN_GLINT_SHADER.setFloat("GlintAlpha", 0.5f);
+				GL40C.glBindVertexArray(vao);
+				GL40C.glDrawArrays(GL40C.GL_TRIANGLES, 0, 36);
+			}
+		}
+		
+		GL40C.glDisable(GL40C.GL_DEPTH_TEST);
+		GL40C.glDepthMask(true);
+		GL40C.glColorMask(true, true, true, true);
+		GL40C.glEnable(GL40C.GL_CULL_FACE);
+		GL40C.glDepthFunc(GL40C.GL_LEQUAL);
+		GL40C.glDisable(GL40C.GL_BLEND);
+		GL40C.glBlendFuncSeparate(GL40C.GL_SRC_ALPHA, GL40C.GL_ONE_MINUS_SRC_ALPHA, GL40C.GL_ONE, GL40C.GL_ZERO);
+	}
+	
+	// Shamelessly stolen from RenderType#setupGlintTexturing
+	private static Matrix4f setupGlintTexturing(float scale) {
+		long l = (long)((double) Util.getMillis() * Minecraft.getInstance().options.glintSpeed().get() * 8.0);
+		float f = (float)(l % 110000L) / 110000.0F;
+		float g = (float)(l % 30000L) / 30000.0F;
+		Matrix4f matrix4f = new Matrix4f().translation(-f, g, 0.0F);
+		matrix4f.rotateZ((float) (Math.PI / 18)).scale(scale);
+		return matrix4f;
+	}
+	
+	private static int getTextureId(ResourceLocation resourceLocation) {
+		TextureManager textureManager = Minecraft.getInstance().getTextureManager();
+		AbstractTexture abstractTexture = textureManager.getTexture(resourceLocation);
+		return abstractTexture.getId();
 	}
 }
