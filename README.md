@@ -26,6 +26,7 @@ There are a few unobtainable blocks that Weird Wares adds to the Creative menu. 
 
 ## Sculk Remote
 When used, the Sculk Remote can remotely interact with a block. When sneaking and used, the Sculk Remote sets its target position and dimension to the target block. When dispensed in a dispenser block, the Sculk Remote remotely interacts with its target block, effectively enabling remote redstone. Additionally, Sculk Remotes can shift right-click in a dispenser if the player holds shift and left-clicks a block.
+![The crafting recipe for a Sculk Remote](recipe_sculk_remote.png)
 ![The metadata tooltip of a Sculk Remote](sculk_remote.png)
 ![The lever is off before using a Sculk Remote bound to the Lever](use_sculk_remote_0.png)
 ![The lever is now on after using a Sculk Remote bound to the Lever](use_sculk_remote_1.png)
