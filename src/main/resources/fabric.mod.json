@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
-	"id": "${id}",
-	"version": "${version}",
+	"id": "${mod_id}",
+	"version": "${mod_version}",
 	"name": "Weird Wares",
 	"description": "Weird wares for your wacky world!",
 	"authors": [
@@ -31,18 +31,17 @@
 		"weird-wares.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.0",
-		"minecraft": ">=1.21 <=1.21.1",
-		"java": ">=21",
-		"fabric-api": "*"
+		"fabricloader": ">=${fabric_loader_version}",
+		"minecraft": "${minecraft_version}",
+		"java": ">=${java_version}",
+		"fabric-api": ">=${fabric_api_version}"
 	},
 	"conflicts": {
-		"sodium": ">0.6 <=0.5"
+		"sodium": "*",
+		"quilt-loader": "*"
 	},
 	"suggests": {
-		"quilt-loader": "0.26.x",
-		"luckperms": "*",
-		"wthit": "~fabric-12.2.2",
-		"modmenu": ">=11.0.1"
+		"wthit": "~${wthit_version}",
+		"modmenu": ">=${modmenu_version}"
 	}
 }

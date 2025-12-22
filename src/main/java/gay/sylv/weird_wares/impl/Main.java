@@ -39,6 +39,7 @@ import java.util.Set;
 @org.jetbrains.annotations.ApiStatus.Internal
 public final class Main implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(Constants.MOD_NAME);
+	public static final boolean GLINT_DISABLED = true;
 	
 	@Override
 	public void onInitialize() {

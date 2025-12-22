@@ -10,6 +10,8 @@ package gay.sylv.weird_wares.impl.item;
 import gay.sylv.weird_wares.impl.util.Initializable;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 
 import static gay.sylv.weird_wares.impl.util.Constants.modId;
@@ -27,26 +29,30 @@ public final class Items implements Initializable {
 	public void initialize() {
 		GLITTER = register(
 				"glitter",
-				new GlitterItem(
-						new Item.Properties()
-								.stacksTo(99)
-				)
+				GlitterItem::new,
+				new Item.Properties()
+						.stacksTo(99)
 		);
 		
 		SCULK_REMOTE = register(
 				"sculk_remote",
-				new SculkRemoteItem(
-						new Item.Properties()
-								.stacksTo(1)
-				)
+				SculkRemoteItem::new,
+				new Item.Properties()
+						.stacksTo(1)
 		);
 	}
 	
-	private static <I extends Item> I register(String id, I item) {
+	public static <I extends Item> I register(String id, Factory<I> itemFactory, Item.Properties properties) {
+		properties.setId(ResourceKey.create(Registries.ITEM, modId(id)));
 		return Registry.register(
 				BuiltInRegistries.ITEM,
 				modId(id),
-				item
+				itemFactory.create(properties)
 		);
+	}
+
+	@FunctionalInterface
+	public interface Factory<I extends Item> {
+		I create(Item.Properties properties);
 	}
 }

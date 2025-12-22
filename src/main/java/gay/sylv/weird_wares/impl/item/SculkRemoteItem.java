@@ -19,21 +19,22 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 @org.jetbrains.annotations.ApiStatus.Internal
 public class SculkRemoteItem extends Item {
@@ -42,17 +43,17 @@ public class SculkRemoteItem extends Item {
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
 		if (stack.has(DataComponents.REMOTE_TARGET)) {
 			RemoteTarget remoteTarget = stack.get(DataComponents.REMOTE_TARGET);
 			assert remoteTarget != null;
-			tooltipComponents.add(
+			tooltipComponents.accept(
 					Component.translatable(
 							"tooltip.weird-wares.item.sculk_remote.dimension",
-							remoteTarget.dimension().location()
+							remoteTarget.dimension().identifier()
 					).withStyle(ChatFormatting.DARK_GRAY)
 			);
-			tooltipComponents.add(
+			tooltipComponents.accept(
 					Component.translatable(
 							"tooltip.weird-wares.item.sculk_remote.position",
 							remoteTarget.pos().getX(),
@@ -64,7 +65,7 @@ public class SculkRemoteItem extends Item {
 		
 		if (stack.has(DataComponents.REMOTE_STATE)) {
 			if (Objects.requireNonNull(stack.get(DataComponents.REMOTE_STATE)).states().contains(RemoteState.Type.SHIFT)) {
-				tooltipComponents.add(
+				tooltipComponents.accept(
 						Component.translatable(
 								"tooltip.weird-wares.item.sculk_remote.remote_state.shift"
 						).withStyle(ChatFormatting.DARK_GRAY)
@@ -109,7 +110,7 @@ public class SculkRemoteItem extends Item {
 	}
 	
 	@Override
-	public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+	public @NotNull InteractionResult use(Level level, Player player, InteractionHand usedHand) {
 		ItemStack stack = player.getItemInHand(usedHand);
 		if (
 				!level.isClientSide() &&
@@ -151,18 +152,6 @@ public class SculkRemoteItem extends Item {
 						1.0f,
 						1.0f
 				);
-			} else {
-				Vec3 position = player.position();
-				level.playSound(
-						null,
-						position.x,
-						position.y,
-						position.z,
-						SoundEvents.SCULK_CLICKING,
-						SoundSource.BLOCKS,
-						1.0f,
-						1.0f
-				);
 			}
 		}
 		
@@ -172,11 +161,11 @@ public class SculkRemoteItem extends Item {
 	}
 	
 	@Override
-	public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player) {
-		ItemStack itemInHand = player.getItemInHand(InteractionHand.MAIN_HAND);
+	public boolean canDestroyBlock(ItemStack stack, BlockState state, Level level, BlockPos pos, LivingEntity entity) {
+		ItemStack itemInHand = entity.getItemInHand(InteractionHand.MAIN_HAND);
 		if (itemInHand.is(Items.SCULK_REMOTE)) {
 			float pitch;
-			if (player.isShiftKeyDown()) {
+			if (entity.isShiftKeyDown()) {
 				pitch = getPitchForStateChange(itemInHand, RemoteState.Type.SHIFT);
 			} else {
 				pitch = 0.0f;
@@ -188,7 +177,7 @@ public class SculkRemoteItem extends Item {
 			
 			level.playSound(
 					null,
-					player,
+					entity,
 					SoundEvents.UI_BUTTON_CLICK.value(),
 					SoundSource.PLAYERS,
 					1.0f,
@@ -224,13 +213,9 @@ public class SculkRemoteItem extends Item {
 	public void useBlock(BlockPos pos, Player player, Level level, BlockHitResult result) {
 		BlockState blockState = level.getBlockState(pos);
 		InteractionHand interactionHand = InteractionHand.MAIN_HAND;
-		ItemInteractionResult itemInteractionResult = blockState.useItemOn(player.getItemInHand(interactionHand), level, player, interactionHand, result);
-		if (!itemInteractionResult.consumesAction()) {
-			if (itemInteractionResult != ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION
-					|| !blockState.useWithoutItem(level, player, result).consumesAction()) {
-				UseOnContext useOnContext = new UseOnContext(player, interactionHand, result);
-				player.getItemInHand(interactionHand).useOn(useOnContext);
-			}
+		if (!blockState.useWithoutItem(level, player, result).consumesAction()) {
+			var useOnContext = new UseOnContext(player, interactionHand, result);
+			player.getItemInHand(interactionHand).useOn(useOnContext);
 		}
 	}
 }

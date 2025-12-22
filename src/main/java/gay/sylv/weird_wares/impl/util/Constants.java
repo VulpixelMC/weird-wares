@@ -9,7 +9,7 @@ package gay.sylv.weird_wares.impl.util;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @org.jetbrains.annotations.ApiStatus.Internal
 public final class Constants {
@@ -20,8 +20,8 @@ public final class Constants {
 	
 	private Constants() {}
 	
-	public static ResourceLocation modId(String id) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
+	public static Identifier modId(String id) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, id);
 	}
 	
 	public static boolean isEnvironment(EnvType envType) {

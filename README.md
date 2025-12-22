@@ -3,6 +3,8 @@ Weird wares for your wacky world! This mod adds various unobtainable and forgott
 [![Showcased at BlanketCon '25](https://raw.githubusercontent.com/worldwidepixel/badges/refs/heads/main/bc25/featured_in/cozy.svg)](https://modfest.net/bc25)
 
 ## Glitter
+*Note: this feature has been disabled.*
+
 **Fair warning**: Excessive use of glitter may result in frame drops.
 
 Glitter can be used to add enchantment glint to items and blocks in your world. In the inventory, select a stack of glitter, then apply (left click) the glitter on another item stack. Enchanted blocks that are placed down will appear enchanted in the world.

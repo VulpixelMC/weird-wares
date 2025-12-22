@@ -26,10 +26,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.ZombifiedPiglin;
+import net.minecraft.world.entity.monster.zombie.ZombifiedPiglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -47,6 +47,8 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -108,11 +110,11 @@ public class NetherReactorBlock extends BaseEntityBlock {
 	
 	@Override
 	protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-		return useItemOn(ItemStack.EMPTY, state, level, pos, player, InteractionHand.MAIN_HAND, hitResult).result();
+		return useItemOn(ItemStack.EMPTY, state, level, pos, player, InteractionHand.MAIN_HAND, hitResult);
 	}
 	
 	@Override
-	protected @NotNull ItemInteractionResult useItemOn(
+	protected @NotNull InteractionResult useItemOn(
 			ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult
 	) {
 		if (level.isClientSide() || state.getValue(STATE) != State.INACTIVE) return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
@@ -121,12 +123,12 @@ public class NetherReactorBlock extends BaseEntityBlock {
 		PlayerList playerList = Objects.requireNonNull(level.getServer()).getPlayerList();
 		if (!correctPattern) {
 			playerList.broadcastSystemMessage(INCORRECT_PATTERN, true);
-			return ItemInteractionResult.FAIL;
+			return InteractionResult.FAIL;
 		} else {
 			playerList.broadcastSystemMessage(ACTIVE, true);
 			level.setBlock(pos, state.setValue(STATE, State.ACTIVE), STATE_CHANGE);
 			NetherReactorBlockEntity.placeSpire(level, pos);
-			return ItemInteractionResult.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
 	}
 	
@@ -198,7 +200,7 @@ public class NetherReactorBlock extends BaseEntityBlock {
 							
 							if (willSpawn) {
 								hasSpawned = true;
-								ZombifiedPiglin zombifiedPiglin = EntityType.ZOMBIFIED_PIGLIN.create(level);
+								ZombifiedPiglin zombifiedPiglin = EntityType.ZOMBIFIED_PIGLIN.create(level, EntitySpawnReason.STRUCTURE);
 								Vec3 mobPos = randomPos(pos, level.random);
 								assert zombifiedPiglin != null;
 								zombifiedPiglin.setPos(mobPos);
@@ -298,17 +300,15 @@ public class NetherReactorBlock extends BaseEntityBlock {
 		}
 		
 		@Override
-		protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-			var modTag = new CompoundTag();
-			modTag.putInt("progress_timer", progressTimer);
-			
-			tag.put("weird-wares", modTag);
+		protected void loadAdditional(ValueInput input) {
+			ValueInput modTag = input.childOrEmpty("weird-wares");
+			progressTimer = modTag.getIntOr("progress_timer", 0);
 		}
 		
 		@Override
-		protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-			CompoundTag modTag = tag.getCompound("weird-wares");
-			progressTimer = modTag.getInt("progress_timer");
+		protected void saveAdditional(ValueOutput output) {
+			ValueOutput modOutput = output.child("weird-wares");
+			modOutput.putInt("progress_timer", progressTimer);
 		}
 		
 		@Nullable

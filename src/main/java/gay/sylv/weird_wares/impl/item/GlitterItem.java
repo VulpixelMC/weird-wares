@@ -8,7 +8,7 @@
 package gay.sylv.weird_wares.impl.item;
 
 import gay.sylv.weird_wares.impl.DataAttachments;
-import gay.sylv.weird_wares.impl.client.render.Rendering;
+import gay.sylv.weird_wares.impl.Main;
 import gay.sylv.weird_wares.impl.network.server.AddGlintPayload;
 import gay.sylv.weird_wares.impl.network.server.RemoveGlintPayload;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -27,14 +27,15 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 @org.jetbrains.annotations.ApiStatus.Internal
 public class GlitterItem extends Item {
@@ -43,13 +44,21 @@ public class GlitterItem extends Item {
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-		tooltipComponents.add(Component.translatable("lore.weird-wares.item.glitter"));
-	}
-	
-	@Override
-	public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
-		return true;
+	public void appendHoverText(
+			ItemStack stack,
+			TooltipContext context,
+			TooltipDisplay tooltipDisplay,
+			Consumer<Component> tooltipAdder,
+			TooltipFlag flag
+	) {
+		super.appendHoverText(
+				stack,
+				context,
+				tooltipDisplay,
+				tooltipAdder,
+				flag
+		);
+		tooltipAdder.accept(Component.translatable("lore.weird-wares.item.glitter"));
 	}
 	
 	@Override
@@ -66,6 +75,8 @@ public class GlitterItem extends Item {
 	
 	@Override
 	public @NotNull InteractionResult useOn(UseOnContext context) {
+		if (Main.GLINT_DISABLED) return InteractionResult.PASS;
+
 		BlockPos clickedPos = context.getClickedPos();
 		var chunk = context.getLevel().getChunkAt(clickedPos);
 		Set<BlockPos> glints = new HashSet<>(DataAttachments.getGlint(chunk));
@@ -87,7 +98,6 @@ public class GlitterItem extends Item {
 	public static void updateGlint(UseOnContext context, BlockPos clickedPos, Set<BlockPos> glints) {
 		if (context.getLevel().isClientSide()) {
 			SectionPos sectionPos = SectionPos.of(clickedPos);
-			Rendering.markGlintDirty(sectionPos);
 		} else {
 			Level level = context.getLevel();
 			Player player = context.getPlayer();

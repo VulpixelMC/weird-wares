@@ -9,15 +9,20 @@ package gay.sylv.weird_wares.impl.block;
 
 import gay.sylv.weird_wares.impl.block.NetherReactorBlock.NetherReactorBlockEntity;
 import gay.sylv.weird_wares.impl.block.entity.type.BlockEntityHolder;
+import gay.sylv.weird_wares.impl.item.Items;
 import gay.sylv.weird_wares.impl.util.Constants;
 import gay.sylv.weird_wares.impl.util.Conversions;
 import gay.sylv.weird_wares.impl.util.Initializable;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.minecraft.client.renderer.RenderType;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -48,47 +53,41 @@ public final class Blocks implements Initializable {
 	public void initialize() {
 		UNKNOWN = register(
 				"unknown",
-				new Block(
-						BlockBehaviour.Properties.of()
-								.isValidSpawn((blockState, blockGetter, blockPos, entityType) -> true)
-								.instabreak()
-								.mapColor(MapColor.DIRT)
-								.friction(0.98f)
-				)
+				Block::new,
+				BlockBehaviour.Properties.of()
+						.isValidSpawn((blockState, blockGetter, blockPos, entityType) -> true)
+						.instabreak()
+						.mapColor(MapColor.DIRT)
 		);
 		INFO_UPDATE = register(
 				"info_update",
-				new Block(
-						BlockBehaviour.Properties.of()
-								.sound(SoundType.GRAVEL)
-								.isValidSpawn((blockState, blockGetter, blockPos, entityType) -> true)
-								.strength(0.0f, Constants.INFINITE_BLAST_RESISTANCE)
-								.mapColor(MapColor.COLOR_LIGHT_GREEN)
-				)
+				Block::new,
+				BlockBehaviour.Properties.of()
+						.sound(SoundType.GRAVEL)
+						.isValidSpawn((blockState, blockGetter, blockPos, entityType) -> true)
+						.strength(0.0f, Constants.INFINITE_BLAST_RESISTANCE)
+						.mapColor(MapColor.COLOR_LIGHT_GREEN)
 		);
 		INFO_UPDATE2 = register(
 				"info_update2",
-				new Block(
-						BlockBehaviour.Properties.ofFullCopy(INFO_UPDATE.block())
-				)
+				Block::new,
+				BlockBehaviour.Properties.ofFullCopy(INFO_UPDATE.block())
 		);
 		GLOWING_OBSIDIAN = register(
 				"glowing_obsidian",
-				new Block(
-						BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.OBSIDIAN)
-								.emissiveRendering((blockState, blockGetter, blockPos) -> true)
-								.lightLevel(blockState -> 12)
-				)
+				Block::new,
+				BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.OBSIDIAN)
+						.emissiveRendering((blockState, blockGetter, blockPos) -> true)
+						.lightLevel(blockState -> 12)
 		);
 		
 		NETHER_REACTOR = registerBlockEntityItem(
 				"nether_reactor",
-				new NetherReactorBlock(
-						BlockBehaviour.Properties.of()
-								.strength(3.0f, 6.0f)
-								.requiresCorrectToolForDrops()
-								.sound(SoundTypes.NETHER_REACTOR)
-				),
+				NetherReactorBlock::new,
+				BlockBehaviour.Properties.of()
+						.strength(3.0f, 6.0f)
+						.requiresCorrectToolForDrops()
+						.sound(SoundTypes.NETHER_REACTOR),
 				NetherReactorBlockEntity::new
 		);
 		
@@ -97,28 +96,44 @@ public final class Blocks implements Initializable {
 		}
 	}
 	
-	private static <B extends Block> B registerBlock(@NotNull String id, B block) {
-		return Registry.register(BuiltInRegistries.BLOCK, modId(id), block);
+	private static <B extends Block> B registerBlock(
+			@NotNull String id,
+			Factory<B> blockFactory,
+			BlockBehaviour.Properties properties
+	) {
+		properties.setId(ResourceKey.create(Registries.BLOCK, modId(id)));
+		return Registry.register(
+				BuiltInRegistries.BLOCK,
+				modId(id),
+				blockFactory.create(properties)
+		);
 	}
 	
-	private static <B extends Block> BlockHolder<B, BlockItem> register(@NotNull String id, B block) {
-		return register(id, block, new BlockItem(block, new Item.Properties()));
+	private static <B extends Block> BlockHolder<B, BlockItem> register(@NotNull String id, Factory<B> blockFactory, BlockBehaviour.Properties blockProperties) {
+		B block = registerBlock(id, blockFactory, blockProperties);
+		Item.Properties itemProperties = new Item.Properties();
+		itemProperties.useBlockDescriptionPrefix();
+		BlockItem item = Items.register(id, properties -> new BlockItem(block, properties), itemProperties);
+		return new BlockHolder<>(block, item, modId(id));
 	}
 	
-	private static <B extends Block, I extends Item> BlockHolder<B, I> register(@NotNull String id, B block, I item) {
-		block = registerBlock(id, block);
-		item = Registry.register(BuiltInRegistries.ITEM, modId(id), item);
-		return new BlockHolder<>(block, item);
+	private static <B extends Block, I extends Item> BlockHolder<B, I> register(@NotNull String id, Factory<B> blockFactory, BlockBehaviour.Properties blockProperties, Items.Factory<I> itemFactory, Item.Properties itemProperties) {
+		B block = registerBlock(id, blockFactory, blockProperties);
+		itemProperties.useBlockDescriptionPrefix();
+		I item = Items.register(id, itemFactory, itemProperties);
+		return new BlockHolder<>(block, item, modId(id));
 	}
 	
-	private static <B extends Block, I extends Item, BE extends BlockEntity> BlockEntityHolder<B, I, BE> registerBlockEntityItem(@NotNull String id, B block, BlockEntityType.BlockEntitySupplier<BE> supplier, I item) {
-		BlockHolder<B, I> holder = register(id, block, item);
-		BlockEntityType<BE> type = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, modId(id), BlockEntityType.Builder.of(supplier, block).build());
-		return Conversions.convert(holder, type);
+	private static <B extends Block, I extends Item, BE extends BlockEntity> BlockEntityHolder<B, I, BE> registerBlockEntityItem(@NotNull String id, Factory<B> blockFactory, BlockBehaviour.Properties blockProperties, Items.Factory<I> itemFactory, Item.Properties itemProperties, FabricBlockEntityTypeBuilder.Factory<BE> supplier) {
+		BlockHolder<B, I> holder = register(id, blockFactory, blockProperties, itemFactory, itemProperties);
+		BlockEntityType<BE> type = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, modId(id), FabricBlockEntityTypeBuilder.create(supplier, holder.block()).build());
+		return Conversions.convert(holder, type, modId(id));
 	}
 	
-	private static <B extends Block, BE extends BlockEntity> BlockEntityHolder<B, BlockItem, BE> registerBlockEntityItem(@NotNull String id, B block, BlockEntityType.BlockEntitySupplier<BE> supplier) {
-		return registerBlockEntityItem(id, block, supplier, new BlockItem(block, new Item.Properties()));
+	private static <B extends Block, BE extends BlockEntity> BlockEntityHolder<B, BlockItem, BE> registerBlockEntityItem(@NotNull String id, Factory<B> blockFactory, BlockBehaviour.Properties blockProperties, FabricBlockEntityTypeBuilder.Factory<BE> supplier) {
+		BlockHolder<B, BlockItem> holder = register(id, blockFactory, blockProperties);
+		BlockEntityType<BE> type = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, modId(id), FabricBlockEntityTypeBuilder.create(supplier, holder.block()).build());
+		return Conversions.convert(holder, type, modId(id));
 	}
 	
 	@org.jetbrains.annotations.ApiStatus.Internal
@@ -127,13 +142,18 @@ public final class Blocks implements Initializable {
 		
 		private BlockRendering() {}
 		
-		private static <B extends Block, I extends Item, BE extends BlockEntity> void register(@NotNull BlockEntityHolder<B, I, BE> holder, BlockEntityRendererProvider<BE> rendererProvider) {
+		private static <B extends Block, I extends Item, BE extends BlockEntity, BERS extends BlockEntityRenderState> void register(@NotNull BlockEntityHolder<B, I, BE> holder, BlockEntityRendererProvider<BE, BERS> rendererProvider) {
 			BlockEntityRenderers.register(holder.type(), rendererProvider);
 		}
 		
-		private static void addRenderType(Block block, RenderType renderType) {
-			BlockRenderLayerMap.INSTANCE.putBlock(block, renderType);
+		private static void addRenderType(Block block, ChunkSectionLayer layer) {
+			BlockRenderLayerMap.putBlock(block, layer);
 		}
+	}
+
+	@FunctionalInterface
+	public interface Factory<B extends Block> {
+		B create(BlockBehaviour.Properties properties);
 	}
 	
 	private static class SoundTypes {

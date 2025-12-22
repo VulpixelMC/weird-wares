@@ -4,7 +4,7 @@ import nl.javadude.gradle.plugins.license.License
 
 plugins {
 	id("com.github.hierynomus.license").version("0.16.1")
-	alias(libs.plugins.quilt.loom)
+	alias(libs.plugins.fabric.loom)
 	`maven-publish`
 }
 
@@ -15,6 +15,8 @@ val modId: String by project
 base.archivesName = modId
 version = modVersion
 group = mavenGroup
+
+val javaVersion = JavaVersion.VERSION_21
 
 repositories {
 	// Add repositories to retrieve artifacts from in here.
@@ -75,28 +77,19 @@ dependencies {
 	// Mod Integrations
 	modCompileOnly(libs.wthit)
 	modCompileOnly(libs.wthit.api)
-	modCompileOnly(libs.lucko.fabric.permissions) {
-		exclude(group = "net.fabricmc.fabric-api")
-		exclude(group = "net.fabricmc")
-	}
+	modCompileOnly(libs.lucko.fabric.permissions)
 	modCompileOnly(libs.sodium)
 	
 	modRuntimeOnly(libs.wthit)
-	modRuntimeOnly(libs.modmenu) {
-		exclude(group = "net.fabricmc.fabric-api")
-		exclude(group = "net.fabricmc")
-	}
-	modRuntimeOnly(libs.luckperms)
-	modRuntimeOnly(libs.lucko.fabric.permissions) {
-		exclude(group = "net.fabricmc.fabric-api")
-		exclude(group = "net.fabricmc")
-	}
-	modRuntimeOnly(libs.resource.explorer)
+	modRuntimeOnly(libs.modmenu)
+//	modRuntimeOnly(libs.luckperms)
+	modRuntimeOnly(libs.lucko.fabric.permissions)
+//	modRuntimeOnly(libs.resource.explorer)
 	modRuntimeOnly(libs.spark)
 	modRuntimeOnly(libs.sodium)
 }
 
-tasks.create("markImplInternal") {
+tasks.register("markImplInternal") {
 	description = "Marks all implementation classes with @ApiStatus.Internal"
 	fileTree("${project.projectDir}/src/main/java/gay/sylv/weird_wares/impl").matching {
 		include("**/*.java")
@@ -112,9 +105,21 @@ tasks.create("markImplInternal") {
 
 tasks.processResources {
 	inputs.property("version", version)
+
+	val properties = mapOf(
+		"maven_group" to mavenGroup,
+		"mod_id" to modId,
+		"mod_version" to version,
+		"fabric_loader_version" to libs.fabric.loader.get().version,
+		"java_version" to javaVersion,
+		"minecraft_version" to libs.minecraft.get().version,
+		"fabric_api_version" to libs.fabric.api.get().version,
+		"wthit_version" to libs.wthit.api.get().version,
+		"modmenu_version" to libs.modmenu.get().version
+	)
 	
 	filesMatching("fabric.mod.json") {
-		expand("group" to mavenGroup, "id" to modId, "version" to version)
+		expand(properties)
 	}
 }
 
@@ -129,13 +134,15 @@ loom {
 }
 
 fabricApi {
-	configureDataGeneration()
+	configureDataGeneration {
+		client = true
+	}
 }
 
 java {
 	// Still required by IDEs such as Eclipse and Visual Studio Code
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = javaVersion
+	targetCompatibility = javaVersion
 	
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task if it is present.
 	// If you remove this line, sources will not be generated.

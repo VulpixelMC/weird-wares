@@ -7,6 +7,8 @@
  */
 package gay.sylv.weird_wares.impl.block.entity.type;
 
+import gay.sylv.weird_wares.impl.block.GenericBlockHolder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -17,5 +19,5 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
  * Holds a {@link Block} and a {@link BlockItem} and a {@link BlockEntityType}.
  */
 @org.jetbrains.annotations.ApiStatus.Internal
-public record BlockEntityHolder<B extends Block, I extends Item, BE extends BlockEntity>(B block, I item, BlockEntityType<BE> type) {
+public record BlockEntityHolder<B extends Block, I extends Item, BE extends BlockEntity>(B block, I item, BlockEntityType<BE> type, Identifier id) implements GenericBlockHolder {
 }

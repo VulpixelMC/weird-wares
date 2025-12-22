@@ -1,2 +1,22 @@
-// 1.21	2025-03-13T01:00:22.023371304	Weird Wares/Model Definitions
+// 1.21.11	-999999999-01-01T00:00:00	Weird Wares/Model Definitions
+c40ef7a46f13664e5e14c1423fe3814ab0535272 assets/weird-wares/blockstates/glowing_obsidian.json
+3567fcff6788a99fd840116bb1e4cf8ac4236ea8 assets/weird-wares/blockstates/info_update.json
+0eb9a58ad8a831d90a6ce89a22096d26c3a2e1a8 assets/weird-wares/blockstates/info_update2.json
+54f99b8dfc3b5488e6a388c9370e29eb72d5a62e assets/weird-wares/blockstates/nether_reactor.json
+06115747add2769e97a554bc0d0c5a3397a557fe assets/weird-wares/blockstates/unknown.json
+9cc63b1fcb9b43ccc2e1bb0f3307e5ce75cac90a assets/weird-wares/items/glitter.json
+da0d6825840cce1aa57b91a033d3edcfb7476572 assets/weird-wares/items/glowing_obsidian.json
+b7878af5b45a9b1a92bccc5340cd6980e03ae323 assets/weird-wares/items/info_update.json
+7fe8200548ac80057e68d5ff7d127af54b730b14 assets/weird-wares/items/info_update2.json
+91d4229aee927cfe6237c7f80297dcbdb62f6a20 assets/weird-wares/items/nether_reactor.json
+042ab42fb194fcbe03899511dc6b6d353e47b09c assets/weird-wares/items/sculk_remote.json
+6c35842fda9ae0da1653b730560131144da44eeb assets/weird-wares/items/unknown.json
+fbc0aa5498cb94e2703c821c5ce9d56c60b4c0c2 assets/weird-wares/models/block/glowing_obsidian.json
+19adb4aeb1d696a018aa6a424c4a9bca22b24fe1 assets/weird-wares/models/block/info_update.json
+d584a6fc7e346930f923e614db30f1b86627d2d6 assets/weird-wares/models/block/info_update2.json
+57b87754bb8c95d462a441d72216e5e8a18869f5 assets/weird-wares/models/block/nether_reactor.json
+985657e2088174d6219ba2f6c54b375a3fca0495 assets/weird-wares/models/block/nether_reactor_active.json
+99682a41de1afc23d9955edd0fe8d5007acdef8d assets/weird-wares/models/block/nether_reactor_used.json
+dfef8c546f92bd502073171bc5161d578e6d50d3 assets/weird-wares/models/block/unknown.json
+8e792005447f4a5237e301c60c1fac06811e0230 assets/weird-wares/models/item/glitter.json
 2080bd15c5b5fd2ce5b5b5cddee141370060282f assets/weird-wares/models/item/sculk_remote.json

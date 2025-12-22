@@ -11,10 +11,13 @@ import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 @org.jetbrains.annotations.ApiStatus.Internal
@@ -25,11 +28,25 @@ public class RemoteDispenseBehavior extends DefaultDispenseItemBehavior {
 		player.setItemInHand(InteractionHand.MAIN_HAND, stack);
 		player.setPos(blockSource.center());
 		player.setYRot(blockSource.state().getValue(DispenserBlock.FACING).toYRot());
-		return stack.use(blockSource.level(), player, InteractionHand.MAIN_HAND).getObject();
+		stack.use(blockSource.level(), player, InteractionHand.MAIN_HAND);
+
+		return stack;
 	}
 	
 	@Override
 	protected void playSound(BlockSource blockSource) {
+		Player player = FakePlayer.get(blockSource.level());
+		Vec3 position = player.position();
+		blockSource.level().playSound(
+				null,
+				position.x,
+				position.y,
+				position.z,
+				SoundEvents.SCULK_CLICKING,
+				SoundSource.BLOCKS,
+				1.0f,
+				1.125f
+		);
 	}
 	
 	@Override

@@ -9,6 +9,7 @@ package gay.sylv.weird_wares.impl.util;
 
 import gay.sylv.weird_wares.impl.block.BlockHolder;
 import gay.sylv.weird_wares.impl.block.entity.type.BlockEntityHolder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,7 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 public final class Conversions {
 	private Conversions() {}
 	
-	public static <B extends Block, I extends Item, BE extends BlockEntity> BlockEntityHolder<B, I, BE> convert(BlockHolder<B, I> holder, BlockEntityType<BE> type) {
-		return new BlockEntityHolder<>(holder.block(), holder.item(), type);
+	public static <B extends Block, I extends Item, BE extends BlockEntity> BlockEntityHolder<B, I, BE> convert(BlockHolder<B, I> holder, BlockEntityType<BE> type, Identifier id) {
+		return new BlockEntityHolder<>(holder.block(), holder.item(), type, id);
 	}
 }
