@@ -155,6 +155,7 @@ java {
 
 // If you plan to use a different file for the license, don't forget to change the file name here!
 tasks.withType<AbstractArchiveTask> {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	from("COPYING") {
 		rename { "${it}_${modId}" }
 	}
